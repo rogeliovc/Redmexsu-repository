@@ -1,4 +1,4 @@
-# Latin American Women in High Performance Computing (LAW HPC)
+# REDMEXSU RED MEXICANA DE SUPERCOMPUTO
 
 [![Estado del Proyecto](https://img.shields.io/badge/estado-activo-brightgreen.svg)](https://github.com/rogeliovc/Temporary_Lawhpc)
 
@@ -14,35 +14,6 @@ Sitio web oficial de Latin American Women in High Performance Computing (LAW HPC
 - **🔄 Componentes Modulares**: Arquitectura basada en componentes reutilizables para un mantenimiento sencillo.
 - **🔒 Seguridad Mejorada**: Configuraciones de seguridad avanzadas mediante headers HTTP y políticas de contenido.
 
-##  Estructura del Proyecto
-
-```
-lawhpc-demo/
-├── components/           # Componentes reutilizables (header, footer, etc.)
-├── css/                  # Hojas de estilo
-│   ├── components/       # Estilos específicos de componentes
-│   └── Globalstyles.css  # Estilos globales y variables CSS
-├── images/               # Recursos gráficos globales
-├── js/                   # Lógica de la aplicación
-│   ├── loadComponents.js # Carga dinámica de componentes
-│   └── main.js           # Punto de entrada de JavaScript
-├── pages/                # Páginas del sitio web
-│   ├── agenda/          # Sección de agenda de eventos
-│   │   ├── agenda.html  # Estructura HTML
-│   │   └── agendaStyles.css  # Estilos específicos
-│   ├── contacto/        # Formulario de contacto
-│   │   ├── contacto.html
-│   │   └── contactoStyles.css
-│   ├── homePage/        # Página principal
-│   │   ├── assets/     # Imágenes y recursos
-│   │   └── homePageStyles.css
-│   └── integrantes/     # Sección de equipo
-│       ├── integrantes.html
-│       └── integrantesStyles.css
-├── .htaccess           # Configuración del servidor Apache
-├── index.html          # Punto de entrada principal
-└── README.md           # Documentación del proyecto
-```
 
 ##  Comenzando
 
@@ -62,8 +33,7 @@ lawhpc-demo/
 
 1. **Clonar el repositorio**:
    ```bash
-   git clone https://github.com/rogeliovc/Temporary_Lawhpc.git
-   cd Temporary_Lawhpc
+
    ```
 
 2. **Iniciar un servidor local**:
