@@ -1,11 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>REDMEXSU</title>
+    <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
+    <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
 </head>
 <body>
-    
+    <!-- Header dinámico -->
+    <header id="header-container"></header>
+
+    <main>
+        <section class="welcome">
+            <h1>Bienvenido a REDMEXSU</h1>
+            <p>Red Mexicana de Supercómputo</p>
+        </section>
+    </main>
+
+    <!-- Footer dinámico -->
+    <footer id="footer-container"></footer>
+
+
+    <script>
+      fetch('/components/header.html')
+        .then(res => res.text())
+        .then(html => document.getElementById('header-container').innerHTML = html);
+
+      fetch('/components/footer.html')
+        .then(res => res.text())
+        .then(html => document.getElementById('footer-container').innerHTML = html);
+    </script>
 </body>
 </html>
