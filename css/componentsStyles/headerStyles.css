@@ -4,21 +4,24 @@ body {
     background: #fff;
     color: #111;
 }
+/* Estilos para el Header */
 .header {
-    background: #cae3ff;
+    background: #eff0f1;
     color: #fff;
     padding: 1rem 0;
-    border-bottom: 4px solid #0074d9;
+    border-bottom: 2.3px solid #3762b8;
 }
+
 .header-content {
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    flex-wrap: wrap;
-    padding: 0 1rem;
+    align-items: center;
+    padding: 0 2rem;
+    width: 100%;
 }
+/* Logo */
 .header-logo {
     display: flex;
     align-items: center;
@@ -26,7 +29,15 @@ body {
 .header-logo img {
     height: 48px;
     margin-right: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Efecto hover del logo */
+.header-logo:hover {
+    transform: scale(1.05) translateY(-2px);
+    opacity: 1;
+    filter: drop-shadow(0 4px 12px #ffffff66);
+}
+/* Titulo */
 .site-title {
     font-size: 2rem;
     font-weight: bold;
@@ -37,16 +48,61 @@ body {
     color: #7ecfff;
     margin-top: 0.2rem;
 }
+/* Menu */
 .nav {
     display: flex;
     gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    align-items: center;
+    margin-left: auto; /* Empuja el menú hacia la derecha */
 }
+/* Enlaces del Menu*/
 .nav a {
-    color: #000000;
+    color: #343333;
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 0.75rem 1rem;
+    position: relative;
+    opacity: 0.9;
+    border-radius: 4px;
+    overflow: hidden;
 }
-.nav a:hover {
-    color: #0074d9;
+/* Efecto hover y estado activo */
+.nav a:hover,
+.nav a:focus,
+.nav a.active{
+    color: #3762b8;
+    background: rgba(227, 228, 230, 0.4);
+    opacity: 1;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0);
+    transform: translateY(-2px);
 }
+
+/* Línea inferior */
+.nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, #334698, #0d1a63, transparent);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.8;
+    border-radius: 2px;
+}
+/* Efecto hover en la línea */
+.nav a:hover::after,
+.nav a:focus::after,
+.nav a.active::after {
+    width: 80%;
+    opacity: 1;
+}
+
