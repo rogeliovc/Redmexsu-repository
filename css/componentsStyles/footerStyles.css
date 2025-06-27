@@ -1,8 +1,115 @@
+/* Estilos para el Footer */
 .footer {
-    background: #111;
-    color: #fff;
+    background: #eff0f1;
+    color: #343333;
+    padding: 2rem 0 1rem;
+    border-top: 2.3px solid #3762b8;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem;
+    width: 100%;
+}
+
+/* Logo del Footer */
+.footer-logo {
+    margin-bottom: 1.5rem;
     text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
-    font-size: 0.95rem;
+}
+
+.footer-logo img {
+    height: 60px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.footer-logo:hover img {
+    transform: scale(1.05) translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Enlaces del Footer */
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-links a {
+    color: #343333;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.5rem 0.8rem;
+    position: relative;
+    opacity: 0.9;
+    border-radius: 4px;
+}
+
+.footer-links a:hover,
+.footer-links a:focus {
+    color: #3762b8;
+    background: rgba(227, 228, 230, 0.4);
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+/* Línea inferior en hover */
+.footer-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, #334698, #0d1a63, transparent);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.8;
+    border-radius: 2px;
+}
+
+.footer-links a:hover::after,
+.footer-links a:focus::after {
+    width: 70%;
+    opacity: 1;
+}
+
+/* Copyright */
+.footer-copyright {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d1d5db;
+    width: 100%;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-links {
+        flex-direction: column;
+        gap: 0.8rem;
+        align-items: center;
+    }
+    
+    .footer-logo img {
+        height: 50px;
+    }
+    
+    .footer {
+        padding: 1.5rem 0 1rem;
+    }
 }
