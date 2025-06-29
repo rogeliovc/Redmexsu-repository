@@ -41,19 +41,6 @@
     transform: translateY(-2px);
 }
 
-.footerLinks a::after {
-    content: '';
-    position: absolute;
-
-    height: 2px;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(90deg, transparent, #334698, #0d1a63, transparent);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 70%;
-}
-
 .footerCopyright {
     margin-top: 1rem;
     padding-top: 1rem;
