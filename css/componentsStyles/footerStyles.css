@@ -1,7 +1,8 @@
+/* ===== Footer depured ===== */
 .footer {
-  background: #eff0f1;
-  padding: 2rem 0 1rem;
-  border-top: 2.3px solid #3762b8;
+    background: #eff0f1;
+    padding: 2rem 0 1rem;
+    border-top: 1px solid #3762b8;
 }
 
 .footerContent {
@@ -37,25 +38,6 @@
 .footerLinks a:hover {
   color: #3762b8;
   transform: translateY(-2px);
-}
-
-.footerLinks a::after {
-  content: "";
-  position: relative;
-
-  height: 2px;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    #334698,
-    #0d1a63,
-    transparent
-  );
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 70%;
 }
 
 .footerCopyright {
