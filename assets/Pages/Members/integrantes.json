@@ -1,0 +1,488 @@
+[
+  {
+    "imagen": "/assets/Pages/Members/personas/1.png",
+    "nombre": "Andrei Tchernykh",
+    "institucion": "CICESE",
+    "puesto": "Responsable Enlace del Comité Científico y Difusión"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/2.png",
+    "nombre": "M.C. Argelia Ronquillo Méndez",
+    "institucion": "CICESE",
+    "puesto": "Desarrolladora de Aplicaciones, Cómputo Científico"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/3.png",
+    "nombre": "Mtro. Favio Medrano Jaimes",
+    "institucion": "CICESE",
+    "puesto": "Administrador de Sistemas HPC"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/4.png",
+    "nombre": "David Corona Cruz",
+    "institucion": "UDG",
+    "puesto": "Desarrollador web"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/5.png",
+    "nombre": "Ulises Cortés",
+    "institucion": "UPC",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/6.png",
+    "nombre": "José de Jesús Cruz Guzmán",
+    "institucion": "UNAM",
+    "puesto": "Profesor Asociado, Facultad de Estudios Superiores Cuautitlán"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/7.png",
+    "nombre": "Alfredo Javier Santillan González",
+    "institucion": "UNAM",
+    "puesto": "Investigador Titular de la Dirección General de Servicios de Cómputo Académico"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/8.png",
+    "nombre": "José Luis Gordillo Ruiz",
+    "institucion": "UNAM",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/9.png",
+    "nombre": "Jorge Alberto Gaspar Armenta",
+    "institucion": "USON",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/10.png",
+    "nombre": "Daniel Mendoza Camacho",
+    "institucion": "USON",
+    "puesto": "Técnico Académico del ACARUS"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/11.png",
+    "nombre": "Yessica Vidal Quintanar",
+    "institucion": "USON",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/12.png",
+    "nombre": "Guillermo Arreaga García",
+    "institucion": "USON",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/13.png",
+    "nombre": "Raúl Gilberto Hazas Izquierdo",
+    "institucion": "USON",
+    "puesto": "Técnico Académico del DIFUS"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/14.png",
+    "nombre": "María del Carmen Heras Sánchez",
+    "institucion": "USON",
+    "puesto": "Responsable del ACARUS"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/15.png",
+    "nombre": "Marco Antonio García Revilla",
+    "institucion": "UGTO",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/16.png",
+    "nombre": "Julián Félix Valdez",
+    "institucion": "UGTO",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/17.png",
+    "nombre": "Moisés Torres Martínez",
+    "institucion": "UDG",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/18.png",
+    "nombre": "Liliana Ibeth Barbosa Santillán",
+    "institucion": "UDG",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/19.png",
+    "nombre": "Verónica Lizette Robles Dueñas",
+    "institucion": "UDG",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/20.png",
+    "nombre": "Luis Alberto Gutiérrez Díaz de León",
+    "institucion": "UDG",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/21.png",
+    "nombre": "Juan Manuel Ramírez Alcaraz",
+    "institucion": "UCOL",
+    "puesto": "Profesor-Investigador de tiempo completo, Facultad de Telemática"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/22.png",
+    "nombre": "Manuel Isidro Aguilar Cornejo",
+    "institucion": "UAM",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/23.png",
+    "nombre": "José Reyes Alejandre Ramírez",
+    "institucion": "UAM",
+    "puesto": "Profesor-Investigador, departamento de Química"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/24.png",
+    "nombre": "Jorge Orozco Velazco",
+    "institucion": "UAEMEX",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/25.png",
+    "nombre": "Jorge López Lemus",
+    "institucion": "UAEMEX",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/26.png",
+    "nombre": "Israel Tabarez Paz",
+    "institucion": "UAEMEX",
+    "puesto": "Profesor-Investigador de tiempo completo"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/27.png",
+    "nombre": "Benjamín Ibarra Tandi",
+    "institucion": "UAEMEX",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/28.png",
+    "nombre": "Oscar Rafael García Regis",
+    "institucion": "UAEMEX",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/29.png",
+    "nombre": "Luis Enrique Díaz Sánchez",
+    "institucion": "UAEMEX",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/30.png",
+    "nombre": "Liliana Margarita Félix Ávila",
+    "institucion": "UASLP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/31.png",
+    "nombre": "Raymundo Antonio González Grimaldo",
+    "institucion": "UASLP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/32.png",
+    "nombre": "Juan Carlos Cuevas Tello",
+    "institucion": "UASLP",
+    "puesto": "Profesor-Investigador de tiempo completo"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/33.png",
+    "nombre": "Marco Tulio Gallo Estrada",
+    "institucion": "UASLP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/34.png",
+    "nombre": "Alfredo Tlahuice Flores",
+    "institucion": "UANL",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/35.png",
+    "nombre": "Enrique Cruz Martínez",
+    "institucion": "UACM",
+    "puesto": "Profesor-Investigador de Física y Supercómputo"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/36.png",
+    "nombre": "Sendic Estrada Jiménez",
+    "institucion": "UNACH",
+    "puesto": "Director de la Facultad de Ciencias en Física y Matemáticas"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/37.png",
+    "nombre": "Lizardo Valencia Palomo",
+    "institucion": "UNACH",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/38.png",
+    "nombre": "Karen Salomé Caballero Morales",
+    "institucion": "UNACH",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/39.png",
+    "nombre": "Jorge Alberto Romo González",
+    "institucion": "UNACH",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/40.png",
+    "nombre": "Arnulfo Zepeda Domínguez",
+    "institucion": "UNACH",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/41.png",
+    "nombre": "Carolina Franco Espinosa",
+    "institucion": "UNACH",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/42.png",
+    "nombre": "Alejandra Flores Ortega",
+    "institucion": "UACJ",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/43.png",
+    "nombre": "Rafael Arturo Rocha Vidaurri",
+    "institucion": "INTEL",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/44.png",
+    "nombre": "Adán Valles Chávez",
+    "institucion": "ITCJ",
+    "puesto": "Profesor-Investigador de Posgrado"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/45.png",
+    "nombre": "Arturo Woocay Prieto",
+    "institucion": "ITCJ",
+    "puesto": "Profesor-Investigador de Posgrado"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/46.png",
+    "nombre": "José Luis Morán López",
+    "institucion": "IPICYT",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/47.png",
+    "nombre": "Jorge Lozoya Arandia",
+    "institucion": "UDG",
+    "puesto": "Coordinador de Operación de Servicios"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/48.png",
+    "nombre": "Alejandro Ricardo Femat Flores",
+    "institucion": "IPICYT",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/49.png",
+    "nombre": "José Noel Carbajal Pérez",
+    "institucion": "IPICYT",
+    "puesto": "Investigador Titular \"C\""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/50.png",
+    "nombre": "Juan Carlos Chimal Eguía",
+    "institucion": "IPN",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/51.png",
+    "nombre": "René Luna García",
+    "institucion": "IPN",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/52.png",
+    "nombre": "Jesús González Bernal",
+    "institucion": "INAOE",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/53.png",
+    "nombre": "Genaro Adolfo López Mateo",
+    "institucion": "INAOE",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/54.png",
+    "nombre": "Gustavo Rodríguez Gómez",
+    "institucion": "INAOE",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/55.png",
+    "nombre": "Juan Galeno Herrera",
+    "institucion": "INAOE",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/56.png",
+    "nombre": "Agustín García Rodríguez",
+    "institucion": "INAOE",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/57.png",
+    "nombre": "José Manuel Martínez Madagan",
+    "institucion": "IMP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/58.png",
+    "nombre": "Hans Reyes Chávez",
+    "institucion": "CUDI",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/59.png",
+    "nombre": "Salma Leticia Jalife Villalón",
+    "institucion": "CUDI",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/60.png",
+    "nombre": "Juan Jaime Sanchéz Escobar",
+    "institucion": "CETI",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/61.png",
+    "nombre": "Sergio Ivvan Valdez Peña",
+    "institucion": "CIMAT",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/62.png",
+    "nombre": "Salvador Botello Rionda",
+    "institucion": "CIMAT",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/63.png",
+    "nombre": "Demetrio Fabián García Nocetti",
+    "institucion": "INFOTEC",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/64.png",
+    "nombre": "Raúl Rivera Rodríguez",
+    "institucion": "CICESE",
+    "puesto": "Director de Telamática"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/65.png",
+    "nombre": "Ángel Eduardo Tovar Villaseñor",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/66.png",
+    "nombre": "Erwin José Armando Martí Panameño",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/67.png",
+    "nombre": "Francisco Javier Meléndez Bustamante",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/68.png",
+    "nombre": "Enrique Varela Carlos",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/69.png",
+    "nombre": "María Eugenia Castro Sánchez",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/70.png",
+    "nombre": "Jesús Guillermo Soriano Moro",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/71.png",
+    "nombre": "César Carlos Díaz Torrejón",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/72.png",
+    "nombre": "Fernando Robles Morales",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/73.png",
+    "nombre": "Manuel Isidro Martín Ortíz",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/74.png",
+    "nombre": "José Luis Ricardo Chávez",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/75.png",
+    "nombre": "María Judith Percino Zacarías",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/76.png",
+    "nombre": "Humberto Salazar Ibargüen",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/77.png",
+    "nombre": "María Isabel Pedraza Morales",
+    "institucion": "BUAP",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/78.png",
+    "nombre": "José Rafael Torres Coronado",
+    "institucion": "AEM",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/79.png",
+    "nombre": "Salvador Castañeda Ávila",
+    "institucion": "CICESE",
+    "puesto": ""
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/80.png",
+    "nombre": "José E. Lozano Rizk",
+    "institucion": "CICESE",
+    "puesto": "Jefe del Departamento de Cómputo"
+  },
+  {
+    "imagen": "/assets/Pages/Members/personas/81.png",
+    "nombre": "Veronica Lizette Robles Dueñas",
+    "institucion": "UDG",
+    "puesto": "Líder Proyecto del Centro de Análisis de Datos y Supercómputo"
+  }
+]

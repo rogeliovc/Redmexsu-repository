@@ -1,79 +1,84 @@
 .footer {
-    background: #eff0f1;
-    padding: 2rem 0 1rem;
-    border-top: 2.3px solid #3762b8;
+  background: #eff0f1;
+  padding: 2rem 0 1rem;
+  border-top: 2.3px solid #3762b8;
 }
 
 .footerContent {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .footerLogo {
-    margin-bottom: 1.5rem;
-    text-align: center;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .footerLogo img {
-    height: 60px;
-
+  height: 60px;
 }
 
 .footerLinks {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
 }
 
 .footerLinks a {
-    color: #343333;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 0.9rem;
-    opacity: 0.9;
+  color: #343333;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.9rem;
+  opacity: 0.9;
 }
 
 .footerLinks a:hover {
-    color: #3762b8;
-    transform: translateY(-2px);
+  color: #3762b8;
+  transform: translateY(-2px);
 }
 
 .footerLinks a::after {
-    content: '';
-    position: absolute;
+  content: "";
+  position: relative;
 
-    height: 2px;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: linear-gradient(90deg, transparent, #334698, #0d1a63, transparent);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    width: 70%;
+  height: 2px;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #334698,
+    #0d1a63,
+    transparent
+  );
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 70%;
 }
 
 .footerCopyright {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #d1d5db;
-    text-align: center;
-    font-size: 0.85rem;
-    color: #6b7280;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #d1d5db;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6b7280;
 }
 
 @media (max-width: 768px) {
-    .footerLinks {
-        flex-direction: column;
-        gap: 0.8rem;
-        align-items: center;
-    }
-    
-    .footerLogo img {
-        height: 50px;
-    }
-    
-    .footer {
-        padding: 1.5rem 0 1rem;
-    }
+  .footerLinks {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+  }
+
+  .footerLogo img {
+    height: 50px;
+  }
+
+  .footer {
+    padding: 1.5rem 0 1rem;
+  }
 }

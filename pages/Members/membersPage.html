@@ -1,30 +1,154 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>REDMEXSU | Miembros</title>
-    <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
-    <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css" />
+    <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css" />
+    <link rel="stylesheet" href="/css/Pages/membersPageStyles.css" />
+  </head>
+  <body>
     <!-- Header dinámico -->
     <header id="header-container"></header>
     <main>
+      <div class="members-container">
+        <div class="members-buttons">
+          <button><h4>Instituciones</h4></button>
+          <button><h4>Integrantes</h4></button>
+          <button><h4>¿Cómo pertenecer a la red?</h4></button>
+        </div>
+
+        <div class="members-content">
+          <div id="content"></div>
+        </div>
+      </div>
     </main>
 
     <!-- Footer dinámico -->
     <footer id="footer-container"></footer>
 
-
     <script>
-      fetch('/components/header.html')
-        .then(res => res.text())
-        .then(html => document.getElementById('header-container').innerHTML = html);
+      // Carga header y footer igual que siempre
+      fetch("/components/header.html")
+        .then((res) => res.text())
+        .then(
+          (html) =>
+            (document.getElementById("header-container").innerHTML = html)
+        );
 
-      fetch('/components/footer.html')
-        .then(res => res.text())
-        .then(html => document.getElementById('footer-container').innerHTML = html);
+      fetch("/components/footer.html")
+        .then((res) => res.text())
+        .then(
+          (html) =>
+            (document.getElementById("footer-container").innerHTML = html)
+        );
+
+      const buttons = document.querySelectorAll(".members-buttons button");
+      const contentDiv = document.getElementById("content");
+
+      function clearActive() {
+        buttons.forEach((btn) => btn.classList.remove("active"));
+      }
+
+      function loadInstituciones() {
+        clearActive();
+        buttons[0].classList.add("active");
+
+        fetch("/assets/Pages/Members/instituciones.json")
+          .then((response) => response.json())
+          .then((data) => {
+            contentDiv.innerHTML = "";
+
+            const institutionsDiv = document.createElement("div");
+            institutionsDiv.className = "institutions_div";
+
+            data.forEach((institucion) => {
+              const div = document.createElement("div");
+              div.className = "institution fade-in";
+              div.innerHTML = `
+                <img src="${institucion.imagen}" alt="${institucion.nombre}" style="max-width: 150px;">
+                <a href="${institucion.enlace}" target="_blank"><h3>${institucion.nombre}</h3></a>
+                <p>Enlace: <a href="${institucion.enlace}" target="_blank">${institucion.enlace}</a></p>
+                <p>Domicilio: ${institucion.domicilio}</p>
+              `;
+              institutionsDiv.appendChild(div);
+
+              // ⚡ Activa animación
+              requestAnimationFrame(() => {
+                div.classList.add("show");
+              });
+            });
+
+            contentDiv.appendChild(institutionsDiv);
+          });
+      }
+
+      function loadIntegrantes() {
+        clearActive();
+        buttons[1].classList.add("active");
+
+        fetch("/assets/Pages/Members/integrantes.json")
+          .then((response) => response.json())
+          .then((data) => {
+            const membersDiv = document.createElement("div");
+            membersDiv.className = "members_div";
+            contentDiv.innerHTML = "";
+            data.forEach((integrante) => {
+              const div = document.createElement("div");
+              div.className = "member fade-in";
+              div.innerHTML = `
+                <img src="${integrante.imagen}" alt="${integrante.nombre}" onerror="this.onerror=null; this.src='/assets/coverPersonas.png'">
+                <p class="puesto">${integrante.puesto}</p>
+                <h3 class="nombre">${integrante.nombre}</h3>
+                <p class="institucion">${integrante.institucion}</p>
+              `;
+              membersDiv.appendChild(div);
+
+              // ⚡ Activa animación
+              requestAnimationFrame(() => {
+                div.classList.add("show");
+              });
+            });
+            contentDiv.appendChild(membersDiv);
+          });
+      }
+
+      function loadMembership() {
+        clearActive();
+        buttons[2].classList.add("active");
+
+        const div = document.createElement("div");
+        div.className = "membership-info fade-in";
+        div.innerHTML = `
+          <h3>¿Cómo pertenecer a la red?</h3>
+          <p>Si deseas unirte a la Red Mexicana de Supercómputo, favor de enviar correo electrónico con su solicitud a:</p>
+          <p>M.C. Raúl Hazas Izquierdo, Coordinador de Nuevos Miembros, CTA.</p>
+          <a href="mailto:rhazas@difus.uson.mx">rhazas@difus.uson.mx</a>
+        `;
+        contentDiv.innerHTML = "";
+        contentDiv.appendChild(div);
+
+        // ⚡ Activa animación
+        requestAnimationFrame(() => {
+          div.classList.add("show");
+        });
+      }
+
+      // Eventos
+      buttons[0].addEventListener("click", loadInstituciones);
+      buttons[1].addEventListener("click", loadIntegrantes);
+      buttons[2].addEventListener("click", loadMembership);
+
+      // ✅ Al cargar la página, activa Integrantes
+      window.addEventListener("DOMContentLoaded", loadIntegrantes);
     </script>
-</body>
+  </body>
 </html>
