@@ -70,7 +70,7 @@ img {
     top: -10%;
     left: -10%;
     width: 120%;
-    height: 120%;
+    height: 180%;
     z-index: 1;
     transition: all 0.8s cubic-bezier(0.2, 0.8, 0.4, 1);
     transform: translateZ(-100px) scale(1.2);
@@ -94,7 +94,7 @@ img {
 
 .hero-banner img {
     width: auto;
-    height: 90%;
+    height: 100%;
     object-fit: cover;
     transition: all 0.5s cubic-bezier(0.2, 0.8, 0.4, 1);
 }
@@ -393,47 +393,6 @@ img {
     z-index: 1;
     border: none;
     padding: 0;
-}
-
-/* Estilos para dispositivos móviles */
-@media (max-width: 1024px) {
-    .about-content {
-        grid-template-columns: 1fr;
-        gap: 4rem;
-    }
-    
-    .about-image {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-}
-
-@media (max-width: 768px) {
-    .about-section {
-        padding: 6rem 0;
-    }
-    
-    .section-header h2 {
-        font-size: 2.2rem;
-    }
-    
-    .about-features {
-        grid-template-columns: 1fr;
-    }
-    
-    .about-text p {
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .section-header h2 {
-        font-size: 1.8rem;
-    }
-    
-    .about-text h3 {
-        font-size: 1.8rem;
-    }
 }
 
 .about-text {
