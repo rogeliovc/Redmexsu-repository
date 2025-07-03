@@ -21,7 +21,7 @@ supabaseScript.onload = initApp; // Inicializar la app cuando cargue el SDK
 document.body.appendChild(supabaseScript);
 
 // Importar configuración
-import { CONFIG } from '../../config.js';
+import { CONFIG } from '/config.js';
 
 // Configuración de Supabase
 const { SUPABASE_URL, SUPABASE_KEY } = CONFIG;
