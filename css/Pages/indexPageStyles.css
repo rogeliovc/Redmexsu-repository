@@ -40,13 +40,34 @@ img {
 .hero {
     overflow: hidden;
     perspective: 1000px;
+    position: relative;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-content {
     position: relative;
     z-index: 4;
     text-align: center;
-    padding: 5rem;
+    padding: 3rem 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--white);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
 .hero-content > * {
@@ -74,18 +95,43 @@ img {
 
 .hero-banner {
     position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 120%;
-    height: 120%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 1;
     transition: all 0.8s cubic-bezier(0.2, 0.8, 0.4, 1);
-    transform: translateZ(-100px) scale(1.2);
+    object-fit: cover;
 }
 
 .hero:hover .hero-banner {
     filter: brightness(0.6) blur(4px);
-    transform: translateZ(-100px) scale(1.1);
+    transform: scale(1.05);
+}
+
+@media (max-width: 500px) {
+    .hero {
+        min-height: 10vh; /* Aproximadamente 20% del viewport */
+        max-height: 10px;
+    }
+    
+    .hero-content {
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .hero h1 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .hero p {
+        display: none; /* Mantenemos el párrafo oculto */
+    }
+    
+    .cta-button {
+        padding: 0.2rem 0.6rem;
+        font-size: 0.65rem;
+    }
 }
 
 .hero-banner::after {

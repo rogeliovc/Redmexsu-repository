@@ -1,13 +1,21 @@
 <header>
     <div class="headerContainer">
         <div class="headerContent">
-            <div>
-                <a href="/pages/Home/index.html" class="headerLogo">
+            <div class="logoContainer">
+                <a href="/" class="headerLogo">
                     <img src="/assets/Components/Header/redmexsu_logotipo-encabezado.png" alt="REDMEXSU" class="logoImage">
                 </a>
             </div>
             
-            <nav class="mainNav">
+            <!-- Botón de menú móvil -->
+            <div class="menuToggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            
+            <div class="overlay" id="overlay"></div>
+            <nav class="mainNav" id="main-nav">
                 <div class="navLinks">
                     <a href="/index.html" class="navItem">
                         <span class="navText">INICIO</span>

@@ -11,17 +11,11 @@
     <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
     <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
     <link rel="stylesheet" href="/css/Pages/indexPageStyles.css">
+    <script src="/js/Components/header.js" defer></script>
 </head>
 <body>
     <!-- Header dinámico -->
     <header id="header-container"></header>
-    
-    <script>
-      // Cargar header
-      fetch('/components/header.html')
-        .then(res => res.text())
-        .then(html => document.getElementById('header-container').innerHTML = html);
-    </script>
     
     <!-- Hero Section -->
     <section class="hero animate-on-scroll">

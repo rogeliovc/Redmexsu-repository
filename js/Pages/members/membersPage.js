@@ -1,11 +1,3 @@
-// Cargar header
-fetch('/components/header.html')
-    .then(res => res.text())
-    .then(html => {
-        const header = document.getElementById('header-container');
-        if (header) header.innerHTML = html;
-    });
-
 // Cargar footer
 fetch('/components/footer.html')
     .then(res => res.text())

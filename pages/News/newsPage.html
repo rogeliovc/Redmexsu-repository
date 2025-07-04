@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
     <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
     <link rel="stylesheet" href="/css/Pages/newsPageStyles.css">
+    <script src="/js/Components/header.js" defer></script>
 </head>
 <body>
     <!-- Header dinámico -->
@@ -64,18 +65,11 @@
     <footer id="footer-container"></footer>
 
     <script>
-        // Usar rutas absolutas desde la raíz del sitio
-        const baseUrl = window.location.origin;
-        
-        fetch(`${baseUrl}/components/header.html`)
-            .then(res => res.text())
-            .then(html => document.getElementById('header-container').innerHTML = html)
-            .catch(err => console.error('Error cargando el header:', err));
-
-        fetch(`${baseUrl}/components/footer.html`)
-            .then(res => res.text())
+        // Cargar footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
             .then(html => document.getElementById('footer-container').innerHTML = html)
-            .catch(err => console.error('Error cargando el footer:', err));
+            .catch(error => console.error('Error cargando el footer:', error));
 
         // Datos de ejemplo para el carrusel (reemplazar con datos reales)
         const featuredNews = [
