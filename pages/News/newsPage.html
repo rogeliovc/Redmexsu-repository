@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
     <link rel="stylesheet" href="/css/Pages/newsPageStyles.css">
     <script src="/js/Components/header.js" defer></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Nuestros scripts -->
+    <script type="module" src="/js/Pages/News/newsPage.js"></script>
 </head>
 <body>
     <!-- Header dinámico -->
@@ -26,14 +30,15 @@
         <!-- Carrusel de noticias destacadas -->
         <div class="featured-news">
             <div class="featured-slider">
-                <!-- Las noticias destacadas se agregarán dinámicamente aquí -->
+                <!-- Las noticias destacadas se cargarán dinámicamente desde Supabase -->
+                <div class="loading">Cargando noticias destacadas...</div>
             </div>
             <div class="slider-controls">
                 <button class="slider-arrow prev" aria-label="Noticia anterior">
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <div class="slider-dots">
-                    <!-- Los puntos de navegación se agregarán dinámicamente aquí -->
+                    <!-- Los puntos de navegación se generarán dinámicamente -->
                 </div>
                 <button class="slider-arrow next" aria-label="Siguiente noticia">
                     <i class="fas fa-chevron-right"></i>
@@ -44,20 +49,8 @@
         <h2 class="section-title">Últimas noticias</h2>
 
         <div class="news-grid">
-            <!-- Ejemplo de artículo de noticia -->
-            <article class="news-card">
-                <div class="news-image">
-                    <img src="/assets/images/placeholder-news.jpg" alt="Título de la noticia">
-                    <span class="news-date">15 Jun 2023</span>
-                </div>
-                <div class="news-content">
-                    <h2>Título de la noticia de ejemplo</h2>
-                    <p>Breve descripción o resumen de la noticia que aparecerá en la tarjeta. Puedes incluir aquí un resumen corto que invite a leer más...</p>
-                    <a href="#" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-
-            <!-- Más artículos se agregarán dinámicamente -->
+            <!-- Las noticias se cargarán dinámicamente desde Supabase -->
+            <div class="loading-news">Cargando noticias...</div>
         </div>
     </main>
 
@@ -70,141 +63,6 @@
             .then(response => response.text())
             .then(html => document.getElementById('footer-container').innerHTML = html)
             .catch(error => console.error('Error cargando el footer:', error));
-
-        // Datos de ejemplo para el carrusel (reemplazar con datos reales)
-        const featuredNews = [
-            {
-                title: "Noticia destacada 1",
-                description: "Descripción breve de la noticia destacada que aparecerá en el carrusel.",
-                image: "/assets/images/placeholder-news.jpg",
-                date: "15 Jun 2023",
-                url: "#"
-            },
-            {
-                title: "Noticia destacada 2",
-                description: "Otra noticia importante que quieres resaltar en la sección principal.",
-                image: "/assets/images/placeholder-news2.jpg",
-                date: "10 Jun 2023",
-                url: "#"
-            },
-            {
-                title: "Noticia destacada 3",
-                description: "Tercera noticia destacada con información relevante para los visitantes.",
-                image: "/assets/images/placeholder-news3.jpg",
-                date: "5 Jun 2023",
-                url: "#"
-            }
-        ];
-
-        // Inicializar el carrusel cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', () => {
-            const slider = document.querySelector('.featured-slider');
-            const dotsContainer = document.querySelector('.slider-dots');
-            const prevBtn = document.querySelector('.slider-arrow.prev');
-            const nextBtn = document.querySelector('.slider-arrow.next');
-            
-            let currentSlide = 0;
-            let slideInterval;
-            const slideIntervalTime = 5000; // 5 segundos
-
-            // Crear slides
-            featuredNews.forEach((news, index) => {
-                // Crear slide
-                const slide = document.createElement('div');
-                slide.className = 'featured-slide';
-                slide.innerHTML = `
-                    <img src="${news.image}" alt="${news.title}">
-                    <span class="featured-date">${news.date}</span>
-                    <div class="featured-content">
-                        <h2>${news.title}</h2>
-                        <p>${news.description}</p>
-                        <a href="${news.url}" class="read-more">Leer más <i class="fas fa-arrow-right"></i></a>
-                    </div>
-                `;
-                slider.appendChild(slide);
-
-                // Crear puntos de navegación
-                const dot = document.createElement('button');
-                dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
-                dot.setAttribute('data-slide', index);
-                dot.setAttribute('aria-label', `Ir a la diapositiva ${index + 1}`);
-                dotsContainer.appendChild(dot);
-            });
-
-            const slides = document.querySelectorAll('.featured-slide');
-            const dots = document.querySelectorAll('.slider-dot');
-
-            // Función para mostrar un slide específico
-            function goToSlide(slideIndex) {
-                // Si el índice está fuera de rango, ajustarlo
-                if (slideIndex >= slides.length) {
-                    slideIndex = 0;
-                } else if (slideIndex < 0) {
-                    slideIndex = slides.length - 1;
-                }
-
-                // Actualizar la posición del slider
-                slider.style.transform = `translateX(-${slideIndex * 100}%)`;
-                
-                // Actualizar el punto activo
-                dots.forEach((dot, index) => {
-                    dot.classList.toggle('active', index === slideIndex);
-                });
-
-                currentSlide = slideIndex;
-            }
-
-            // Función para ir al siguiente slide
-            function nextSlide() {
-                goToSlide(currentSlide + 1);
-            }
-
-            // Función para ir al slide anterior
-            function prevSlide() {
-                goToSlide(currentSlide - 1);
-            }
-
-            // Iniciar el autoplay
-            function startAutoPlay() {
-                slideInterval = setInterval(nextSlide, slideIntervalTime);
-            }
-
-            // Detener el autoplay
-            function stopAutoPlay() {
-                clearInterval(slideInterval);
-            }
-
-            // Event listeners
-            nextBtn.addEventListener('click', () => {
-                nextSlide();
-                stopAutoPlay();
-                startAutoPlay();
-            });
-
-            prevBtn.addEventListener('click', () => {
-                prevSlide();
-                stopAutoPlay();
-                startAutoPlay();
-            });
-
-            // Navegación por puntos
-            dots.forEach(dot => {
-                dot.addEventListener('click', (e) => {
-                    const slideIndex = parseInt(e.target.getAttribute('data-slide'));
-                    goToSlide(slideIndex);
-                    stopAutoPlay();
-                    startAutoPlay();
-                });
-            });
-
-            // Pausar autoplay al hacer hover
-            slider.addEventListener('mouseenter', stopAutoPlay);
-            slider.addEventListener('mouseleave', startAutoPlay);
-
-            // Iniciar el carrusel
-            goToSlide(0);
-            startAutoPlay();
-        });
     </script>
 </body>
 </html>

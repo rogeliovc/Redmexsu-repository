@@ -32,8 +32,15 @@
     <footer id="footer-container"></footer>
 
     <!-- Scripts -->
-    <script src="/js/footer.js"></script>
-    <script src="/js/Pages/floatingShapes.js"></script>
-    <script type="module" src="/js/Pages/members/membersPage.js"></script>
+    <script src="/js/Pages/Members/floatingShapes.js"></script>
+    <script type="module" src="/js/Pages/Members/membersPage.js"></script>
+    
+    <script>
+        // Cargar footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => document.getElementById('footer-container').innerHTML = html)
+            .catch(error => console.error('Error cargando el footer:', error));
+    </script>
 </body>
 </html>
