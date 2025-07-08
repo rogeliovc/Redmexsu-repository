@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const supabase = await getSupabase();
         console.log('Cliente Supabase listo:', !!supabase);
         
+        // Cargar instituciones
+        console.log('Iniciando carga de instituciones...');
+        await cargarInstituciones();
+        console.log('Carga de instituciones completada');
+        
         // Cargar miembros
         console.log('Iniciando carga de miembros...');
         await cargarMiembros();
@@ -141,9 +146,137 @@ async function cargarMiembros() {
 }
 
 // Función para mostrar los miembros en la interfaz
+// Función para cargar instituciones
+async function cargarInstituciones() {
+    console.log('Iniciando carga de instituciones...');
+    const grid = document.getElementById('institutionsGrid');
+    
+    if (!grid) {
+        console.error('No se encontró el contenedor de instituciones');
+        return;
+    }
+
+    // Mostrar mensaje de carga
+    grid.innerHTML = `
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Cargando instituciones...</p>
+        </div>
+    `;
+
+    const CACHE_KEY = 'instituciones_cache';
+    const now = Date.now();
+    
+    try {
+        console.log('Forzando recarga de instituciones desde Supabase...');
+        console.log('Obteniendo cliente Supabase...');
+        const supabase = await getSupabase();
+        
+        if (!supabase) {
+            throw new Error('No se pudo inicializar el cliente de Supabase');
+        }
+        
+        console.log('Consultando la tabla de instituciones...');
+        console.log('Obteniendo datos de instituciones...');
+        
+        // Primero intentamos con las columnas que necesitamos
+        const { data: instituciones, error } = await supabase
+            .from('instituciones')
+            .select('id, nombre, logo_url, pagina_web')
+            .order('nombre', { ascending: true });
+        
+        if (error) {
+            console.error('Error en la consulta a instituciones:', error);
+            
+            // Si falla, intentamos con una consulta más simple
+            console.log('Intentando con consulta simple...');
+            const { data: simpleInstituciones, error: simpleError } = await supabase
+                .from('instituciones')
+                .select('*')
+                .order('id', { ascending: true });
+                
+            if (simpleError) {
+                console.error('Error en consulta simple:', simpleError);
+                throw new Error('No se pudo cargar la información de instituciones');
+            }
+            
+            console.log(`Se encontraron ${simpleInstituciones.length} instituciones (con consulta simple)`);
+            mostrarInstituciones(simpleInstituciones);
+            return;
+        }
+        
+        const institucionesData = instituciones || [];
+        console.log(`Se encontraron ${institucionesData.length} instituciones`);
+        
+        // Mostrar las instituciones
+        mostrarInstituciones(institucionesData);
+
+        // Guardar en caché (sin bloquear la ejecución si falla)
+        try {
+            const cacheData = {
+                data: institucionesData,
+                timestamp: now
+            };
+            localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+        } catch (e) {
+            console.warn('No se pudo guardar en caché:', e);
+        }
+        
+    } catch (error) {
+        console.error('Error al cargar instituciones:', error);
+        grid.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error al cargar las instituciones: ${error.message}</p>
+                <button onclick="cargarInstituciones()" class="retry-button">Reintentar</button>
+            </div>
+        `;
+    }
+}
+
+// Función para mostrar las instituciones en la interfaz
+function mostrarInstituciones(instituciones) {
+    console.log('Mostrando instituciones:', instituciones);
+    const grid = document.getElementById('institutionsGrid');
+    if (!grid) {
+        console.error('No se encontró el contenedor de instituciones');
+        return;
+    }
+
+    if (!instituciones || instituciones.length === 0) {
+        console.warn('No se recibieron instituciones para mostrar');
+        grid.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-university"></i>
+                <p>No se encontraron instituciones en la base de datos</p>
+                <p class="debug-info">Por favor, verifica que la tabla 'instituciones' exista y contenga datos.</p>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = instituciones.map(institucion => `
+        <div class="memberCard">
+            <div class="memberImage">
+                ${institucion.logo_url 
+                    ? `<img src="${institucion.logo_url}" alt="${institucion.nombre}">`
+                    : `<div class="memberInitials">${getInitials(institucion.nombre)}</div>`
+                }
+            </div>
+            <h3>${institucion.nombre}</h3>
+            ${institucion.pagina_web ? `<a href="${institucion.pagina_web}" target="_blank" class="memberLink">
+                <i class="fas fa-globe"></i> Sitio web
+            </a>` : ''}
+        </div>
+    `).join('');
+}
+
 function mostrarMiembros(miembros) {
-    const grid = document.querySelector('.gridContainermembers');
-    if (!grid) return;
+    const grid = document.getElementById('membersGrid');
+    if (!grid) {
+        console.error('No se encontró el contenedor de miembros');
+        return;
+    }
 
     if (!miembros || miembros.length === 0) {
         grid.innerHTML = `

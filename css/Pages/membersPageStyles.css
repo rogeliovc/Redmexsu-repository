@@ -135,8 +135,66 @@ h2 {
   height: auto;
 }
 
+/* Estilos para la sección de instituciones */
+.institutions-section {
+  margin: 3rem 0;
+  width: 100%;
+}
+
+.institutions-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.institutions-table-container {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  margin: 2rem 0;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.institutions-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-color);
+}
+
+.institutions-table th,
+.institutions-table td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.institutions-table th {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: var(--accent-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.institutions-table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.institutions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Estilos para la sección de miembros */
+.members-section {
+  margin: 3rem 0;
+  width: 100%;
+}
+
 .memberCard h3 {
-  color: var(--secondary-color);
+  color: var(--primary-color);
   font-size: 1rem;
   font-weight: 600;
   font-family: 'Montserrat', sans-serif;
