@@ -45,10 +45,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Función para cargar miembros
 async function cargarMiembros() {
     console.log('Iniciando carga de miembros...');
-    const grid = document.querySelector('.gridContainermembers');
+    const grid = document.getElementById('membersGrid');
     
     if (!grid) {
-        console.error('No se encontró el contenedor de miembros');
+        console.error('No se encontró el contenedor de miembros con ID "membersGrid"');
         return;
     }
 
@@ -64,6 +64,9 @@ async function cargarMiembros() {
         // Obtener instancia de Supabase
         console.log('Obteniendo cliente Supabase...');
         const supabase = await getSupabase();
+        if (!supabase) {
+            throw new Error('No se pudo inicializar el cliente de Supabase');
+        }
         console.log('Cliente Supabase obtenido');
 
         // Verificar si hay datos en caché
@@ -84,6 +87,7 @@ async function cargarMiembros() {
                     shouldUpdateCache = false;
                     console.log('Usando datos en caché:', data.length, 'miembros');
                     mostrarMiembros(data);
+                    return; // Salir después de mostrar los datos en caché
                 }
             } catch (e) {
                 console.error('Error al procesar caché:', e);
@@ -93,52 +97,51 @@ async function cargarMiembros() {
         }
 
         // Si no hay datos en caché o están desactualizados, obtener de Supabase
-        if (shouldUpdateCache) {
-            console.log('Obteniendo miembros desde Supabase...');
-            const { data: miembros, error } = await supabase
-                .from('miembros')
-                .select('*')
-                .order('nombre', { ascending: true });
-                
-            console.log('Datos recibidos de Supabase:', JSON.stringify(miembros, null, 2));
+        console.log('Obteniendo miembros desde Supabase...');
+        const { data: miembros, error } = await supabase
+            .from('miembros')
+            .select('*')
+            .order('nombre', { ascending: true });
+            
+        console.log('Datos recibidos de Supabase:', JSON.stringify(miembros, null, 2));
 
-            if (error) {
-                console.error('Error al obtener miembros:', error);
-                throw new Error(`Error al cargar los miembros: ${error.message}`);
-            }
-            
-            console.log('Miembros obtenidos de Supabase:', miembros ? miembros.length : 0);
-            
-            if (!miembros || miembros.length === 0) {
-                throw new Error('No se encontraron miembros en la base de datos');
-            }
-            
-            data = miembros;
-            
-            // Guardar en caché
-            try {
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    timestamp: now,
-                    members: data
-                }));
-                console.log('Datos guardados en caché');
-            } catch (e) {
-                console.warn('No se pudo guardar en caché:', e);
-                // Continuar aunque falle el guardado en caché
-            }
-            
-            // Mostrar los miembros
-            mostrarMiembros(data);
+        if (error) {
+            console.error('Error al obtener miembros:', error);
+            throw new Error(`Error al cargar los miembros: ${error.message}`);
         }
+        
+        console.log('Miembros obtenidos de Supabase:', miembros ? miembros.length : 0);
+        
+        if (!miembros || miembros.length === 0) {
+            throw new Error('No se encontraron miembros en la base de datos');
+        }
+        
+        data = miembros;
+        
+        // Guardar en caché
+        try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                timestamp: now,
+                members: data
+            }));
+            console.log('Datos guardados en caché');
+        } catch (e) {
+            console.warn('No se pudo guardar en caché:', e);
+            // Continuar aunque falle el guardado en caché
+        }
+        
+        // Mostrar los miembros
+        mostrarMiembros(data);
+        
     } catch (error) {
         console.error('Error en cargarMiembros:', error);
-        const grid = document.querySelector('.gridContainermembers');
+        const grid = document.getElementById('membersGrid');
         if (grid) {
             grid.innerHTML = `
                 <div class="error-message">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p>Error al cargar los miembros: ${error.message}</p>
-                    <button onclick="location.reload()" class="retry-button">Reintentar</button>
+                    <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
                 </div>
             `;
         }
@@ -236,90 +239,168 @@ async function cargarInstituciones() {
 
 // Función para mostrar las instituciones en la interfaz
 function mostrarInstituciones(instituciones) {
-    console.log('Mostrando instituciones:', instituciones);
+    console.log('Iniciando mostrarInstituciones con datos:', instituciones);
     const grid = document.getElementById('institutionsGrid');
+    
     if (!grid) {
-        console.error('No se encontró el contenedor de instituciones');
+        console.error('No se encontró el contenedor con ID "institutionsGrid"');
         return;
     }
 
-    if (!instituciones || instituciones.length === 0) {
-        console.warn('No se recibieron instituciones para mostrar');
+    if (!instituciones || !Array.isArray(instituciones)) {
+        console.error('Las instituciones no son un array válido:', instituciones);
+        grid.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error: Los datos recibidos no son válidos</p>
+                <p class="debug-info">Tipo de dato recibido: ${instituciones === null ? 'null' : typeof instituciones}</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (instituciones.length === 0) {
+        console.warn('El array de instituciones está vacío');
         grid.innerHTML = `
             <div class="no-data">
                 <i class="fas fa-university"></i>
                 <p>No se encontraron instituciones en la base de datos</p>
-                <p class="debug-info">Por favor, verifica que la tabla 'instituciones' exista y contenga datos.</p>
+                <p class="debug-info">La consulta no devolvió resultados.</p>
             </div>
         `;
         return;
     }
 
-    grid.innerHTML = instituciones.map(institucion => `
-        <div class="memberCard">
-            <div class="memberImage">
-                ${institucion.logo_url 
-                    ? `<img src="${institucion.logo_url}" alt="${institucion.nombre}">`
-                    : `<div class="memberInitials">${getInitials(institucion.nombre)}</div>`
-                }
+    try {
+        const html = instituciones.map((institucion, index) => {
+            console.log(`Procesando institución ${index + 1}:`, institucion);
+            
+            // Validar datos de la institución
+            if (!institucion.nombre) {
+                console.warn(`La institución en la posición ${index} no tiene nombre:`, institucion);
+                return ''; // Saltar esta institución
+            }
+
+            const nombre = institucion.nombre || 'Sin nombre';
+            const logoUrl = institucion.logo_url || '';
+            const sitioWeb = institucion.pagina_web || '';
+            const iniciales = getInitials(nombre);
+            
+            return `
+                <div class="institutionCard">
+                    <div class="institutionLogo">
+                        ${logoUrl 
+                            ? `<img src="${logoUrl}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'institutionInitials\'>${iniciales}</div>'">`
+                            : `<div class="institutionInitials">${iniciales}</div>`
+                        }
+                    </div>
+                    <h3>${nombre}</h3>
+                    ${sitioWeb ? `
+                        <a href="${sitioWeb.startsWith('http') ? sitioWeb : 'https://' + sitioWeb}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="memberLink">
+                            <i class="fas fa-globe"></i> Sitio web
+                        </a>` 
+                    : ''}
+                </div>
+            `;
+        }).join('');
+
+        grid.innerHTML = html;
+        console.log('Instituciones mostradas correctamente en la interfaz');
+    } catch (error) {
+        console.error('Error al generar el HTML de las instituciones:', error);
+        grid.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error al mostrar las instituciones</p>
+                <p class="debug-info">${error.message}</p>
+                <button onclick="cargarInstituciones()" class="retry-button">Reintentar</button>
             </div>
-            <h3>${institucion.nombre}</h3>
-            ${institucion.pagina_web ? `<a href="${institucion.pagina_web}" target="_blank" class="memberLink">
-                <i class="fas fa-globe"></i> Sitio web
-            </a>` : ''}
-        </div>
-    `).join('');
+        `;
+    }
 }
 
 function mostrarMiembros(miembros) {
+    console.log('Iniciando mostrarMiembros con datos:', miembros);
     const grid = document.getElementById('membersGrid');
+    
     if (!grid) {
-        console.error('No se encontró el contenedor de miembros');
+        console.error('No se encontró el contenedor con ID "membersGrid"');
         return;
     }
 
-    if (!miembros || miembros.length === 0) {
+    if (!miembros || !Array.isArray(miembros)) {
+        console.error('Los miembros no son un array válido:', miembros);
         grid.innerHTML = `
-            <div class="no-members">
-                <i class="fas fa-users-slash"></i>
-                <p>No se encontraron miembros para mostrar</p>
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error: Los datos de miembros no son válidos</p>
+                <p class="debug-info">Tipo de dato recibido: ${miembros === null ? 'null' : typeof miembros}</p>
+                <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
             </div>
         `;
         return;
     }
 
-    console.log('Mostrando miembros con datos:', JSON.stringify(miembros, null, 2));
-
-    // Crear el HTML para cada miembro
-    const miembrosHTML = miembros.map(miembro => {
-        // Mapear posibles nombres de campos
-        const nombre = miembro.nombre || miembro.Nombre || 'Nombre no disponible';
-        const cargo = miembro.cargo || miembro.puesto || miembro.Cargo || miembro.Puesto || '';
-        const institucion = miembro.institucion || miembro.institucion || miembro.Institucion || '';
-        const foto = miembro.foto_url || miembro.foto || miembro.imagen || miembro.Imagen || '';
-
-        return `
-        <div class="memberCard">
-            <div class="image-container">
-                ${foto ? 
-                    `<img 
-                        src="${foto}" 
-                        alt="${nombre}" 
-                        class="memberImage"
-                        loading="lazy"
-                        onload="this.classList.add('loaded')"
-                        onerror="this.onerror=null; this.classList.add('error');"
-                    >` :
-                    `<div class="memberInitials">${getInitials(nombre)}</div>`
-                }
+    if (miembros.length === 0) {
+        console.warn('El array de miembros está vacío');
+        grid.innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-users-slash"></i>
+                <p>No se encontraron miembros para mostrar</p>
+                <p class="debug-info">La consulta no devolvió resultados.</p>
             </div>
-            <h3>${nombre}</h3>
-            ${cargo ? `<p>${cargo}</p>` : ''}
-            ${institucion ? `<p class="institution">${institucion}</p>` : ''}
-        </div>`;
-    }).join('');
+        `;
+        return;
+    }
 
-    grid.innerHTML = miembrosHTML;
+    try {
+        console.log(`Mostrando ${miembros.length} miembros`);
+        
+        // Crear el HTML para cada miembro
+        const miembrosHTML = miembros.map((miembro, index) => {
+            console.log(`Procesando miembro ${index + 1}:`, miembro);
+            
+            // Mapear posibles nombres de campos con manejo de errores
+            const nombre = miembro.nombre || miembro.Nombre || 'Nombre no disponible';
+            const cargo = miembro.cargo || miembro.puesto || miembro.Cargo || miembro.Puesto || '';
+            const institucion = miembro.institucion || miembro.Institucion || miembro.institucion || '';
+            const foto = miembro.foto_url || miembro.foto || miembro.imagen || miembro.Imagen || '';
+            const iniciales = getInitials(nombre);
+            
+            return `
+                <div class="memberCard">
+                    <div class="memberImage">
+                        ${foto 
+                            ? `<img src="${foto}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'memberInitials\'>${iniciales}</div>'">`
+                            : `<div class="memberInitials">${iniciales}</div>`
+                        }
+                    </div>
+                    <div class="memberInfo">
+                        <h3>${nombre}</h3>
+                        ${cargo ? `<p class="memberPosition">${cargo}</p>` : ''}
+                        ${institucion ? `<p class="memberInstitution">${institucion}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        grid.innerHTML = miembrosHTML;
+        console.log('Miembros mostrados correctamente en la interfaz');
+        
+    } catch (error) {
+        console.error('Error al generar el HTML de los miembros:', error);
+        grid.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Error al mostrar los miembros</p>
+                <p class="debug-info">${error.message}</p>
+                <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
+            </div>
+        `;
+    }
 }
 
 // Función auxiliar para obtener las iniciales de un nombre
