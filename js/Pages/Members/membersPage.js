@@ -272,7 +272,15 @@ function mostrarInstituciones(instituciones) {
     }
 
     try {
-        const html = instituciones.map((institucion, index) => {
+        // Crear un botón para mostrar todos los miembros
+        const html = `
+            <div class="institutionCard" onclick="filtrarMiembrosPorInstitucion(null)">
+                <div class="institutionLogo">
+                    <div class="institutionInitials">ALL</div>
+                </div>
+                <h3>Todos los miembros</h3>
+            </div>
+        ` + instituciones.map((institucion, index) => {
             console.log(`Procesando institución ${index + 1}:`, institucion);
             
             // Validar datos de la institución
@@ -287,7 +295,7 @@ function mostrarInstituciones(instituciones) {
             const iniciales = getInitials(nombre);
             
             return `
-                <div class="institutionCard">
+                <div class="institutionCard" onclick="filtrarMiembrosPorInstitucion('${institucion.id}')">
                     <div class="institutionLogo">
                         ${logoUrl 
                             ? `<img src="${logoUrl}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'institutionInitials\'>${iniciales}</div>'">`
@@ -295,6 +303,7 @@ function mostrarInstituciones(instituciones) {
                         }
                     </div>
                     <h3>${nombre}</h3>
+                    <div class="memberCount">0 miembros</div>
                     ${sitioWeb ? `
                         <a href="${sitioWeb.startsWith('http') ? sitioWeb : 'https://' + sitioWeb}" 
                            target="_blank" 
@@ -308,21 +317,26 @@ function mostrarInstituciones(instituciones) {
         }).join('');
 
         grid.innerHTML = html;
+        
+        // Inicializar el estado de las tarjetas
+        const cards = grid.querySelectorAll('.institutionCard');
+        cards.forEach(card => {
+            card.addEventListener('click', (e) => {
+                // Remover la clase active de todas las tarjetas
+                cards.forEach(c => c.classList.remove('active'));
+                // Agregar la clase active a la tarjeta clickeada
+                card.classList.add('active');
+            });
+        });
+
         console.log('Instituciones mostradas correctamente en la interfaz');
     } catch (error) {
         console.error('Error al generar el HTML de las instituciones:', error);
-        grid.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Error al mostrar las instituciones</p>
-                <p class="debug-info">${error.message}</p>
-                <button onclick="cargarInstituciones()" class="retry-button">Reintentar</button>
-            </div>
-        `;
     }
 }
 
-function mostrarMiembros(miembros) {
+// Función para mostrar los miembros en la interfaz
+async function mostrarMiembros(miembros, institucionId = null) {
     console.log('Iniciando mostrarMiembros con datos:', miembros);
     const grid = document.getElementById('membersGrid');
     
@@ -336,60 +350,75 @@ function mostrarMiembros(miembros) {
         grid.innerHTML = `
             <div class="error-message">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p>Error: Los datos de miembros no son válidos</p>
+                <p>Error: Los datos recibidos no son válidos</p>
                 <p class="debug-info">Tipo de dato recibido: ${miembros === null ? 'null' : typeof miembros}</p>
-                <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
-            </div>
-        `;
-        return;
-    }
-
-    if (miembros.length === 0) {
-        console.warn('El array de miembros está vacío');
-        grid.innerHTML = `
-            <div class="no-data">
-                <i class="fas fa-users-slash"></i>
-                <p>No se encontraron miembros para mostrar</p>
-                <p class="debug-info">La consulta no devolvió resultados.</p>
             </div>
         `;
         return;
     }
 
     try {
-        console.log(`Mostrando ${miembros.length} miembros`);
-        
-        // Crear el HTML para cada miembro
-        const miembrosHTML = miembros.map((miembro, index) => {
+        // Filtrar miembros según la institución seleccionada
+        const miembrosFiltrados = institucionId 
+            ? miembros.filter(m => m.institucion_id === institucionId)
+            : miembros;
+
+        if (miembrosFiltrados.length === 0) {
+            grid.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-users"></i>
+                    <p>No se encontraron miembros${institucionId ? ' en esta institución' : ''}</p>
+                    <p class="debug-info">${institucionId ? `Filtrado por institución ${institucionId}` : 'Mostrando todos los miembros'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        // Actualizar el contador de miembros en las tarjetas de institución
+        const cards = document.querySelectorAll('.institutionCard');
+        cards.forEach(card => {
+            const cardId = card.getAttribute('onclick')?.match(/'(\d+)'/)?.[1];
+            if (cardId) {
+                const count = miembros.filter(m => m.institucion_id === parseInt(cardId)).length;
+                card.querySelector('.memberCount').textContent = `${count} miembros`;
+            }
+        });
+
+        const html = miembrosFiltrados.map((miembro, index) => {
             console.log(`Procesando miembro ${index + 1}:`, miembro);
             
-            // Mapear posibles nombres de campos con manejo de errores
-            const nombre = miembro.nombre || miembro.Nombre || 'Nombre no disponible';
-            const cargo = miembro.cargo || miembro.puesto || miembro.Cargo || miembro.Puesto || '';
-            const institucion = miembro.institucion || miembro.Institucion || miembro.institucion || '';
-            const foto = miembro.foto_url || miembro.foto || miembro.imagen || miembro.Imagen || '';
+            // Validar datos del miembro
+            if (!miembro.nombre) {
+                console.warn(`El miembro en la posición ${index} no tiene nombre:`, miembro);
+                return ''; // Saltar este miembro
+            }
+
+            const nombre = miembro.nombre || 'Sin nombre';
+            const fotoUrl = miembro.foto_url || '';
+            const correo = miembro.correo || '';
+            const institucion = miembro.institucion || '';
             const iniciales = getInitials(nombre);
             
             return `
                 <div class="memberCard">
                     <div class="image-container">
-                        ${foto 
-                            ? `<img class="memberImage" src="${foto}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'memberInitials\'>${iniciales}</div>'">`
+                        ${fotoUrl 
+                            ? `<img src="${fotoUrl}" alt="${nombre}" class="memberImage">`
                             : `<div class="memberInitials">${iniciales}</div>`
                         }
                     </div>
-                    <div class="memberInfo">
-                        <h3>${nombre}</h3>
-                        ${cargo ? `<p class="memberPosition">${cargo}</p>` : ''}
-                        ${institucion ? `<p class="memberInstitution">${institucion}</p>` : ''}
-                    </div>
+                    <h3>${nombre}</h3>
+                    <p>${institucion}</p>
+                    ${correo ? `
+                        <a href="mailto:${correo}" class="memberLink">
+                            <i class="fas fa-envelope"></i> Contactar
+                        </a>` : ''}
                 </div>
             `;
         }).join('');
 
-        grid.innerHTML = miembrosHTML;
+        grid.innerHTML = html;
         console.log('Miembros mostrados correctamente en la interfaz');
-        
     } catch (error) {
         console.error('Error al generar el HTML de los miembros:', error);
         grid.innerHTML = `
@@ -400,6 +429,27 @@ function mostrarMiembros(miembros) {
                 <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
             </div>
         `;
+    }
+}
+
+// Función para filtrar miembros por institución
+function filtrarMiembrosPorInstitucion(institucionId) {
+    console.log('Filtrando miembros por institución:', institucionId);
+    
+    // Obtener los miembros almacenados en caché
+    const CACHE_KEY = 'miembros_cache';
+    const cachedData = localStorage.getItem(CACHE_KEY);
+    
+    if (!cachedData) {
+        console.error('No hay datos en caché para filtrar');
+        return;
+    }
+
+    try {
+        const { members } = JSON.parse(cachedData);
+        mostrarMiembros(members, institucionId);
+    } catch (error) {
+        console.error('Error al filtrar miembros:', error);
     }
 }
 

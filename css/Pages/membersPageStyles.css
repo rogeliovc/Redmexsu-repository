@@ -189,6 +189,9 @@ h2 {
   margin: 3rem 0;
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .institutionsSection::before {
@@ -198,7 +201,7 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), transparent);
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05));
   pointer-events: none;
 }
 
@@ -227,22 +230,30 @@ h2 {
 
 .gridContainermembers {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
   padding: 0 1rem;
   margin-top: 2rem;
+  width: 100%;
 }
 
 .institutionCard {
   background: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   position: relative;
   overflow: hidden;
-  min-height: 300px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 200px;
 }
 
 .institutionCard::before {
@@ -254,7 +265,6 @@ h2 {
   height: 100%;
   background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
   pointer-events: none;
-  transition: opacity 0.3s;
 }
 
 .institutionCard:hover::before {
@@ -262,38 +272,26 @@ h2 {
 }
 
 .institutionCard:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-5px);
   border-color: var(--accent-color);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.institutionCard.active {
+  border-color: var(--accent-color);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
 
 .institutionLogo {
-  width: 140px;
-  height: 140px;
-  margin: 0 auto 1.5rem;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1rem;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid var(--accent-color);
-  box-shadow: var(--box-shadow);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 2;
-}
-
-.institutionLogo::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2));
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
-
-.institutionLogo:hover::before {
-  opacity: 0.5;
+  border: 3px solid var(--accent-color);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .institutionLogo img {
@@ -304,7 +302,7 @@ h2 {
 }
 
 .institutionCard:hover .institutionLogo img {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .institutionInitials {
@@ -315,8 +313,8 @@ h2 {
   justify-content: center;
   background: var(--accent-color);
   color: var(--white);
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 2rem;
+  font-weight: 700;
   border-radius: 50%;
   transition: all 0.3s ease;
 }
@@ -328,46 +326,48 @@ h2 {
 
 .institutionCard h3 {
   color: var(--primary-color);
-  font-size: 1.8rem;
-  margin-bottom: 1.2rem;
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
+  font-weight: 700;
   text-align: center;
   line-height: 1.2;
   transition: color 0.3s;
 }
 
-.institutionCard:hover h3 {
+.institutionCard:hover h3,
+.institutionCard.active h3 {
   color: var(--accent-color);
 }
 
-.memberLink {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
+.institutionCard .memberCount {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+  opacity: 0.9;
+  transition: color 0.3s;
+}
+
+.institutionCard:hover .memberCount,
+.institutionCard.active .memberCount {
   color: var(--accent-color);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  margin-top: 1.5rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(5px);
 }
 
-.memberLink:hover {
-  color: var(--white);
-  background: var(--accent-color);
-  transform: translateY(-2px);
+/* Efecto de pulsación al hacer click */
+.institutionCard:active {
+  transform: scale(0.98);
+  transition: transform 0.1s;
 }
 
-.memberLink i {
-  font-size: 1.4rem;
-  transition: transform 0.3s ease;
+/* Animación de selección */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
 }
 
-.memberLink:hover i {
-  transform: translateX(3px);
+.institutionCard.active {
+  animation: pulse 0.5s ease-in-out;
 }
 
 /* Estilos para las instituciones */
