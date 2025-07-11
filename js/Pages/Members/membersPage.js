@@ -283,6 +283,14 @@ function mostrarInstituciones(instituciones) {
         
         // Agregar manejadores de eventos
         const cards = grid.querySelectorAll('.institutionCard');
+        
+        // Seleccionar 'Todos' por defecto
+        if (cards.length > 0) {
+            cards[0].classList.add('active');
+            // Cargar todos los miembros al inicio
+            filtrarMiembrosPorInstitucion(null);
+        }
+        
         cards.forEach(card => {
             card.addEventListener('click', (e) => {
                 // Remover la clase active de todas las tarjetas

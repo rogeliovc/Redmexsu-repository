@@ -101,53 +101,96 @@ h2 {
 /* Estilos para los grupos de miembros */
 .member-group {
   margin-bottom: 3rem;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  background: rgba(30, 41, 59, 0.7);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+.member-group:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-color);
 }
 
 .member-group:last-child {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .group-title {
   color: var(--accent-color);
-  font-size: 1.5rem;
-  margin: 0 0 1.5rem 0;
-  padding-bottom: 0.75rem;
+  font-size: 1.8rem;
+  margin: 0 0 2rem 0;
+  padding-bottom: 1rem;
   border-bottom: 2px solid var(--accent-color);
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: -0.5px;
+  position: relative;
+  display: inline-block;
+}
+
+.group-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-color), transparent);
+  border-radius: 2px;
 }
 
 .members-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+  padding: 0.5rem;
 }
 
 .member-card {
   width: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1.5rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
   text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.member-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--accent-color), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .member-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
   border-color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.member-card:hover::before {
+  opacity: 1;
 }
 
 .member-header {
@@ -203,39 +246,85 @@ h2 {
   font-style: italic;
 }
 
+/* Efecto de hover sutil en dispositivos táctiles */
+@media (hover: hover) and (pointer: fine) {
+  .member-card:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
 /* Estilos responsivos */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
   .members-container {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .member-group {
+    padding: 1.5rem;
   }
   
+  .members-container {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.25rem;
+  }
+  
+  .group-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .member-card {
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
   .member-group {
-    padding: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  
+  .members-container {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
   }
   
   .group-title {
     font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .member-header {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .member-content h3 {
+    font-size: 1rem;
+    margin: 0.5rem 0 0.25rem;
+  }
+  
+  .member-email {
+    font-size: 0.8rem;
+    margin: 0.2rem 0;
+  }
+  
+  .member-institution {
+    font-size: 0.75rem;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 400px) {
   .members-container {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .member-header {
     width: 80px;
     height: 80px;
-  }
-  
-  .member-content h3 {
-    font-size: 1rem;
-  }
-  
-  .member-email,
-  .member-institution {
-    font-size: 0.75rem;
   }
 }
 
