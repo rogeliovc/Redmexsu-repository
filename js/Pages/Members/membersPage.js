@@ -372,9 +372,9 @@ function mostrarMiembros(miembros) {
             
             return `
                 <div class="memberCard">
-                    <div class="memberImage">
+                    <div class="image-container">
                         ${foto 
-                            ? `<img src="${foto}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'memberInitials\'>${iniciales}</div>'">`
+                            ? `<img class="memberImage" src="${foto}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'memberInitials\'>${iniciales}</div>'">`
                             : `<div class="memberInitials">${iniciales}</div>`
                         }
                     </div>
