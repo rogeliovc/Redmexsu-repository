@@ -69,34 +69,7 @@ async function cargarMiembros() {
         }
         console.log('Cliente Supabase obtenido');
 
-        // Verificar si hay datos en caché
-        const CACHE_KEY = 'miembros_cache';
-        const CACHE_DURATION = 3600000; // 1 hora en milisegundos
-        const now = Date.now();
-        let data = null;
-        let shouldUpdateCache = true;
-
-        // Intentar obtener datos del caché
-        const cachedData = localStorage.getItem(CACHE_KEY);
-        if (cachedData) {
-            try {
-                const { timestamp, members } = JSON.parse(cachedData);
-                // Si los datos en caché son recientes, usarlos
-                if (now - timestamp < CACHE_DURATION) {
-                    data = members;
-                    shouldUpdateCache = false;
-                    console.log('Usando datos en caché:', data.length, 'miembros');
-                    mostrarMiembros(data);
-                    return; // Salir después de mostrar los datos en caché
-                }
-            } catch (e) {
-                console.error('Error al procesar caché:', e);
-                // Si hay error con el caché, forzar actualización
-                shouldUpdateCache = true;
-            }
-        }
-
-        // Si no hay datos en caché o están desactualizados, obtener de Supabase
+        // Siempre obtener datos de Supabase
         console.log('Obteniendo miembros desde Supabase...');
         const { data: miembros, error } = await supabase
             .from('miembros')
@@ -118,17 +91,7 @@ async function cargarMiembros() {
         
         data = miembros;
         
-        // Guardar en caché
-        try {
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-                timestamp: now,
-                members: data
-            }));
-            console.log('Datos guardados en caché');
-        } catch (e) {
-            console.warn('No se pudo guardar en caché:', e);
-            // Continuar aunque falle el guardado en caché
-        }
+        // No guardar en caché para asegurar datos actualizados
         
         // Mostrar los miembros
         mostrarMiembros(data);
@@ -185,8 +148,8 @@ async function cargarInstituciones() {
         // Primero intentamos con las columnas que necesitamos
         const { data: instituciones, error } = await supabase
             .from('instituciones')
-            .select('id, nombre, logo_url, pagina_web')
-            .order('nombre', { ascending: true });
+            .select('id, titulo, logo_url, pagina_web')
+            .order('titulo', { ascending: true });
         
         if (error) {
             console.error('Error en la consulta a instituciones:', error);
@@ -196,7 +159,7 @@ async function cargarInstituciones() {
             const { data: simpleInstituciones, error: simpleError } = await supabase
                 .from('instituciones')
                 .select('*')
-                .order('id', { ascending: true });
+                .order('titulo', { ascending: true });
                 
             if (simpleError) {
                 console.error('Error en consulta simple:', simpleError);
@@ -272,37 +235,38 @@ function mostrarInstituciones(instituciones) {
     }
 
     try {
-        // Crear un botón para mostrar todos los miembros
-        const html = `
-            <div class="institutionCard" onclick="filtrarMiembrosPorInstitucion(null)">
+        let html = '';
+        
+        // Botón para mostrar todos los miembros
+        html += `
+            <div class="institutionCard">
                 <div class="institutionLogo">
                     <div class="institutionInitials">ALL</div>
                 </div>
                 <h3>Todos los miembros</h3>
-            </div>
-        ` + instituciones.map((institucion, index) => {
-            console.log(`Procesando institución ${index + 1}:`, institucion);
-            
-            // Validar datos de la institución
-            if (!institucion.nombre) {
-                console.warn(`La institución en la posición ${index} no tiene nombre:`, institucion);
-                return ''; // Saltar esta institución
+            </div>`;
+
+        // Tarjetas para cada institución
+        instituciones.forEach((institucion, index) => {
+            if (!institucion.titulo) {
+                console.warn(`La institución en la posición ${index} no tiene título:`, institucion);
+                return;
             }
 
-            const nombre = institucion.nombre || 'Sin nombre';
+            const titulo = institucion.titulo || 'Sin título';
             const logoUrl = institucion.logo_url || '';
             const sitioWeb = institucion.pagina_web || '';
-            const iniciales = getInitials(nombre);
+            const iniciales = getInitials(titulo);
             
-            return `
-                <div class="institutionCard" onclick="filtrarMiembrosPorInstitucion('${institucion.id}')">
+            html += `
+                <div class="institutionCard" data-titulo="${titulo}">
                     <div class="institutionLogo">
                         ${logoUrl 
-                            ? `<img src="${logoUrl}" alt="${nombre}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'institutionInitials\'>${iniciales}</div>'">`
+                            ? `<img src="${logoUrl}" alt="${titulo}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'institutionInitials\'>${iniciales}</div>'">`
                             : `<div class="institutionInitials">${iniciales}</div>`
                         }
                     </div>
-                    <h3>${nombre}</h3>
+                    <h3>${titulo}</h3>
                     <div class="memberCount">0 miembros</div>
                     ${sitioWeb ? `
                         <a href="${sitioWeb.startsWith('http') ? sitioWeb : 'https://' + sitioWeb}" 
@@ -312,13 +276,12 @@ function mostrarInstituciones(instituciones) {
                             <i class="fas fa-globe"></i> Sitio web
                         </a>` 
                     : ''}
-                </div>
-            `;
-        }).join('');
+                </div>`;
+        });
 
         grid.innerHTML = html;
         
-        // Inicializar el estado de las tarjetas
+        // Agregar manejadores de eventos
         const cards = grid.querySelectorAll('.institutionCard');
         cards.forEach(card => {
             card.addEventListener('click', (e) => {
@@ -326,6 +289,10 @@ function mostrarInstituciones(instituciones) {
                 cards.forEach(c => c.classList.remove('active'));
                 // Agregar la clase active a la tarjeta clickeada
                 card.classList.add('active');
+                
+                // Obtener el título de la institución
+                const titulo = card === cards[0] ? null : card.dataset.titulo;
+                filtrarMiembrosPorInstitucion(titulo);
             });
         });
 
@@ -335,8 +302,8 @@ function mostrarInstituciones(instituciones) {
     }
 }
 
-// Función para mostrar los miembros en la interfaz
-async function mostrarMiembros(miembros, institucionId = null) {
+// Función para mostrar los miembros en la interfaz, agrupados por título y/o institución
+async function mostrarMiembros(miembros, institucionTitulo = null) {
     console.log('Iniciando mostrarMiembros con datos:', miembros);
     const grid = document.getElementById('membersGrid');
     
@@ -358,98 +325,233 @@ async function mostrarMiembros(miembros, institucionId = null) {
     }
 
     try {
-        // Filtrar miembros según la institución seleccionada
-        const miembrosFiltrados = institucionId 
-            ? miembros.filter(m => m.institucion_id === institucionId)
-            : miembros;
-
-        if (miembrosFiltrados.length === 0) {
-            grid.innerHTML = `
-                <div class="no-data">
-                    <i class="fas fa-users"></i>
-                    <p>No se encontraron miembros${institucionId ? ' en esta institución' : ''}</p>
-                    <p class="debug-info">${institucionId ? `Filtrado por institución ${institucionId}` : 'Mostrando todos los miembros'}</p>
-                </div>
-            `;
-            return;
-        }
-
         // Actualizar el contador de miembros en las tarjetas de institución
         const cards = document.querySelectorAll('.institutionCard');
         cards.forEach(card => {
-            const cardId = card.getAttribute('onclick')?.match(/'(\d+)'/)?.[1];
+            const cardId = card.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
             if (cardId) {
-                const count = miembros.filter(m => m.institucion_id === parseInt(cardId)).length;
-                card.querySelector('.memberCount').textContent = `${count} miembros`;
+                const count = miembros.filter(m => m.instituciones_id === cardId).length;
+                card.querySelector('.memberCount').textContent = `${count} ${count === 1 ? 'miembro' : 'miembros'}`;
             }
         });
 
-        const html = miembrosFiltrados.map((miembro, index) => {
-            console.log(`Procesando miembro ${index + 1}:`, miembro);
-            
-            // Validar datos del miembro
-            if (!miembro.nombre) {
-                console.warn(`El miembro en la posición ${index} no tiene nombre:`, miembro);
-                return ''; // Saltar este miembro
-            }
+        // Filtrar miembros si se proporciona un institucionTitulo (comparación insensible a mayúsculas/minúsculas)
+        console.log('Filtrando miembros para la institución:', institucionTitulo);
+        const miembrosFiltrados = institucionTitulo 
+            ? miembros.filter(miembro => {
+                const match = miembro.instituciones_id && 
+                    miembro.instituciones_id.toString().toLowerCase() === institucionTitulo.toLowerCase();
+                return match;
+            })
+            : miembros;
+        console.log('Total de miembros encontrados:', miembrosFiltrados.length);
 
-            const nombre = miembro.nombre || 'Sin nombre';
-            const fotoUrl = miembro.foto_url || '';
-            const correo = miembro.correo || '';
-            const institucion = miembro.institucion || '';
-            const iniciales = getInitials(nombre);
+        // Ordenar miembros por nombre
+        miembrosFiltrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+        // Agrupar miembros por título y/o institución
+        const grupos = {};
+        
+        miembrosFiltrados.forEach(miembro => {
+            const titulo = miembro.titulo || 'Sin título';
+            const institucionId = miembro.instituciones_id || 'sin-institucion';
             
-            return `
-                <div class="memberCard">
-                    <div class="image-container">
-                        ${fotoUrl 
-                            ? `<img src="${fotoUrl}" alt="${nombre}" class="memberImage">`
-                            : `<div class="memberInitials">${iniciales}</div>`
-                        }
+            // Si estamos mostrando una sola institución, agrupamos solo por título
+            const grupoKey = institucionTitulo 
+                ? titulo 
+                : `${titulo}_${institucionId}`;
+            
+            if (!grupos[grupoKey]) {
+                grupos[grupoKey] = {
+                    titulo: titulo,
+                    institucionId: institucionId,
+                    miembros: []
+                };
+            }
+            grupos[grupoKey].miembros.push(miembro);
+        });
+
+        // Generar HTML para cada grupo
+        let gruposHTML = '';
+        
+        // Ordenar los grupos por título
+        const gruposOrdenados = Object.values(grupos).sort((a, b) => 
+            a.titulo.localeCompare(b.titulo) || 
+            (a.institucionId || '').toString().localeCompare(b.institucionId || '')
+        );
+
+        for (const grupo of gruposOrdenados) {
+            const miembrosHTML = grupo.miembros.map(miembro => {
+                const nombre = miembro.nombre || 'Sin nombre';
+                const correo = miembro.correo || '';
+                const fotoUrl = miembro.foto_url || '';
+                const iniciales = getInitials(nombre);
+
+                return `
+                    <div class="member-card">
+                        <div class="member-header">
+                            ${fotoUrl 
+                                ? `<img src="${fotoUrl}" alt="${nombre}" loading="lazy">`
+                                : `<div class="member-initials">${iniciales}</div>`}
+                        </div>
+                        <div class="member-content">
+                            <h3>${nombre}</h3>
+                            ${correo ? `<p class="member-email">${correo}</p>` : ''}
+                            ${!institucionTitulo && miembro.instituciones_id 
+                                ? `<p class="member-institution">${miembro.instituciones_id}</p>` 
+                                : ''}
+                        </div>
                     </div>
-                    <h3>${nombre}</h3>
-                    <p>${institucion}</p>
-                    ${correo ? `
-                        <a href="mailto:${correo}" class="memberLink">
-                            <i class="fas fa-envelope"></i> Contactar
-                        </a>` : ''}
+                `;
+            }).join('');
+
+            // Solo mostrar el título del grupo si hay más de un grupo o si el título no está vacío
+            const mostrarTituloGrupo = gruposOrdenados.length > 1 || grupo.titulo !== 'Sin título';
+            
+            gruposHTML += `
+                <div class="member-group">
+                    ${mostrarTituloGrupo ? `<h2 class="group-title">${grupo.titulo}</h2>` : ''}
+                    <div class="members-container">
+                        ${miembrosHTML}
+                    </div>
                 </div>
             `;
-        }).join('');
+        }
 
-        grid.innerHTML = html;
-        console.log('Miembros mostrados correctamente en la interfaz');
+        // Mostrar mensaje si no hay miembros
+        if (miembrosFiltrados.length === 0) {
+            grid.innerHTML = `
+                <div class="no-members-message">
+                    <p>No hay miembros disponibles${institucionTitulo ? ' en esta institución' : ''}.</p>
+                </div>
+            `;
+        } else {
+            grid.innerHTML = gruposHTML;
+        }
     } catch (error) {
-        console.error('Error al generar el HTML de los miembros:', error);
+        console.error('Error al mostrar miembros:', error);
         grid.innerHTML = `
             <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Error al mostrar los miembros</p>
-                <p class="debug-info">${error.message}</p>
-                <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
+                <p>Error al mostrar los miembros. Por favor, intenta recargar la página.</p>
             </div>
         `;
     }
 }
 
-// Función para filtrar miembros por institución
-function filtrarMiembrosPorInstitucion(institucionId) {
-    console.log('Filtrando miembros por institución:', institucionId);
+// Hacer la función disponible globalmente
+window.filtrarMiembrosPorInstitucion = async function(institucionTitulo) {
+    console.log('Filtrando miembros por institución:', institucionTitulo);
     
-    // Obtener los miembros almacenados en caché
-    const CACHE_KEY = 'miembros_cache';
-    const cachedData = localStorage.getItem(CACHE_KEY);
-    
-    if (!cachedData) {
-        console.error('No hay datos en caché para filtrar');
-        return;
-    }
-
     try {
-        const { members } = JSON.parse(cachedData);
-        mostrarMiembros(members, institucionId);
+        // Obtener instancia de Supabase
+        const supabase = await getSupabase();
+        if (!supabase) {
+            throw new Error('No se pudo inicializar el cliente de Supabase');
+        }
+
+        // Obtener miembros de la base de datos
+        let query = supabase
+            .from('miembros')
+            .select('*');
+
+        // Si se proporciona un título de institución, filtrar por él
+        if (institucionTitulo) {
+            query = query.eq('instituciones_id', institucionTitulo);
+        }
+
+        const { data: miembros, error } = await query;
+
+        if (error) {
+            console.error('Error al obtener miembros:', error);
+            throw error;
+        }
+
+        // Si no hay título de institución (caso 'Todos'), agrupar por título
+        if (!institucionTitulo) {
+            // Ordenar miembros por nombre
+            const miembrosOrdenados = [...miembros].sort((a, b) => 
+                a.nombre.localeCompare(b.nombre)
+            );
+            
+            // Agrupar por título
+            const grupos = {};
+            miembrosOrdenados.forEach(miembro => {
+                const titulo = miembro.titulo || 'Sin título';
+                if (!grupos[titulo]) {
+                    grupos[titulo] = [];
+                }
+                grupos[titulo].push(miembro);
+            });
+
+            // Generar HTML para cada grupo
+            let gruposHTML = '';
+            
+            // Ordenar los grupos por título
+            const titulosOrdenados = Object.keys(grupos).sort();
+            
+            for (const titulo of titulosOrdenados) {
+                const miembrosGrupo = grupos[titulo];
+                const miembrosHTML = miembrosGrupo.map(miembro => {
+                    const nombre = miembro.nombre || 'Sin nombre';
+                    const correo = miembro.correo || '';
+                    const fotoUrl = miembro.foto_url || '';
+                    const iniciales = getInitials(nombre);
+
+                    return `
+                        <div class="member-card">
+                            <div class="member-header">
+                                ${fotoUrl 
+                                    ? `<img src="${fotoUrl}" alt="${nombre}" loading="lazy">`
+                                    : `<div class="member-initials">${iniciales}</div>`}
+                            </div>
+                            <div class="member-content">
+                                <h3>${nombre}</h3>
+                                ${correo ? `<p class="member-email">${correo}</p>` : ''}
+                                ${miembro.instituciones_id 
+                                    ? `<p class="member-institution">${miembro.instituciones_id}</p>` 
+                                    : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Solo mostrar el título del grupo si hay más de un grupo o si el título no está vacío
+                const mostrarTituloGrupo = titulosOrdenados.length > 1 || titulo !== 'Sin título';
+                
+                gruposHTML += `
+                    <div class="member-group">
+                        ${mostrarTituloGrupo ? `<h2 class="group-title">${titulo}</h2>` : ''}
+                        <div class="members-container">
+                            ${miembrosHTML}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Mostrar los grupos
+            const grid = document.getElementById('membersGrid');
+            if (grid) {
+                grid.innerHTML = gruposHTML || `
+                    <div class="no-members-message">
+                        <p>No hay miembros disponibles.</p>
+                    </div>
+                `;
+            }
+        } else {
+            // Si hay un título de institución, mostrar los miembros directamente
+            mostrarMiembros(miembros, institucionTitulo);
+        }
     } catch (error) {
         console.error('Error al filtrar miembros:', error);
+        const grid = document.getElementById('membersGrid');
+        if (grid) {
+            grid.innerHTML = `
+                <div class="error-message">
+                    <p>Error al filtrar los miembros: ${error.message}</p>
+                    <button onclick="cargarMiembros()" class="retry-button">Reintentar</button>
+                </div>
+            `;
+        }
     }
 }
 
