@@ -16,7 +16,7 @@
   --border-radius: 12px;        /* Radio de borde */
   --gradient-start: #0f172a;    /* Color inicial del gradiente */
   --gradient-end: #1e293b;      /* Color final del gradiente */
-}CICESE
+}
 
 /* Fondo con textura y patrones sutiles */
 body::before {
@@ -65,19 +65,80 @@ h1 {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
   font-size: 2.5rem;
-  color: black;
-  margin-bottom: 3rem;
+  color: var(--white);
+  margin-bottom: 0rem;
 }
+/* Estilos para los mensajes de carga y sin datos */
+.loading-container,
+.no-members-message,
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  min-height: 300px;
+  color: var(--text-light);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--accent-color);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.no-members-message i,
+.no-data i {
+  font-size: 3rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.no-members-message p,
+.no-data p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+}
+
+.no-members-message .btn {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.no-members-message .btn:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* Estilos para las instituciones */
 .institutionsSection {
-  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-  border-radius: 20px;
   position: relative;
   display: flex;
   flex-direction: column;
-  padding-bottom: 10rem;
+  padding: 2rem 1rem 3rem;
+  margin-bottom: 2rem;
 }
-
 
 .institutionsSection h2 {
   text-align: center;
@@ -88,18 +149,67 @@ h1 {
   font-weight: 800;
 }
 
+/* Contenedor del botón Todos */
+.all-institutions-btn-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+/* Botón Todos */
+.all-institutions-btn {
+  background: var(--accent-color);
+  color: var(--white);
+  border: none;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.all-institutions-btn:hover {
+  background: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.all-institutions-btn.active {
+  background: #1d4ed8;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Contenedor de las tarjetas de instituciones */
+.institutions-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 .institutionCard {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.8rem 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  position: relative;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 200px;
+  position: relative;
+  overflow: hidden;
 }
 
 .institutionCard::before {
@@ -109,39 +219,39 @@ h1 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05));
   pointer-events: none;
 }
 
 .institutionCard:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-color);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .institutionCard.active {
+  background: rgba(59, 130, 246, 0.2);
   border-color: var(--accent-color);
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .institutionLogo {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 1rem;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid var(--accent-color);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--accent-color);
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .institutionLogo img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  transition: transform 0.3s ease-in-out;
+  object-fit: cover;
+  transition: transform 0.3s ease;
 }
-
 
 .institutionInitials {
   width: 100%;
@@ -151,44 +261,61 @@ h1 {
   justify-content: center;
   background: var(--accent-color);
   color: var(--white);
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   border-radius: 50%;
-  transition: all 0.3s ease;
 }
-
 
 .institutionCard h3 {
   color: var(--primary-color);
-  font-size: 1.4rem;
-  margin-bottom: 0.8rem;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.2;
-  transition: color 0.3s;
+  font-size: 1rem;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-
 .institutionCard .memberCount {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   color: var(--text-light);
-  margin-top: 0.5rem;
+  margin-left: auto;
+  padding-left: 0.8rem;
   opacity: 0.9;
-  transition: color 0.3s;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 /* Efecto de pulsación al hacer click */
 .institutionCard:active {
-  transform: scale(0.98);
+  transform: scale(0.98) translateY(0);
   transition: transform 0.1s;
 }
 
-/* Animación de selección */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .institutions-container {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Para Firefox */
+  }
+  
+  .institutions-container::-webkit-scrollbar {
+    display: none; /* Para Chrome, Safari y Opera */
+  }
+  
+  .institutionCard {
+    min-width: 160px;
+  }
+  
+  .institutionsSection h2 {
+    font-size: 2rem;
+  }
 }
 
 /* Estilos para las instituciones */
@@ -268,30 +395,38 @@ h2 {
   color: var(--primary-color);
   font-size: 2rem;
   text-align: center;
-  color: black;
+  color: var(--white);
 }
 
 /* Estilos para los grupos de miembros */
 .member-group {
-  background: rgba(30, 41, 59, 0.7);
+  background: rgba(57, 69, 88, 0.2);
   border-radius: 16px;
-  margin: auto -17rem;
+  margin: 0 auto;
   padding: 2rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
-  width: 1350px;
+  max-width: 1200px;
+  width: 1800px;
+  box-sizing: border-box;
 }
 
 .members-container {
-  width: 1350px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 4rem;
+  gap: 2rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  justify-content: center;
 }
 
 .member-card {
-  width: 90%;
+  width: 100%;
+  max-width: 250px;
   height: 300px;
+  margin: 0 auto;
   background: rgba(255, 255, 255, 0.03);
   border-radius: 14px;
   text-align: center;
