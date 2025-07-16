@@ -1,71 +1,277 @@
+/* Estilos generales */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f5f7fa;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: #f8f9fa;
   margin: 0;
   padding: 0;
+  color: #2d3748;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Contenedor principal */
 .agenda {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 2rem auto;
-  padding: 1rem;
+  padding: 2.5rem;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
+/* Título principal */
 .agenda h1 {
-  font-size: 2rem;
-  border-bottom: 3px solid #0077cc;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1a365d;
+  margin: 0 0 1.5rem;
   padding-bottom: 0.5rem;
-  color: #333;
+  position: relative;
+  display: inline-block;
+  letter-spacing: -0.5px;
 }
 
+.agenda h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #3182ce, #63b3ed);
+  border-radius: 3px;
+}
+
+/* Subtítulo */
 .subtitulo {
-  margin: 1rem 0;
-  font-size: 1.2rem;
-  color: #005599;
-  font-weight: bold;
-  border-left: 5px solid #005599;
-  padding-left: 10px;
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a5568;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 3rem 0 1.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid #e2e8f0;
+  width: 100%;
 }
 
+/* Tarjeta de evento */
 .evento {
-  margin: 1.5rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #ddd;
+  margin: 2.5rem 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-left: 1px solid #e2e8f0;
+  padding-left: 1.5rem;
+}
+
+.evento:last-child {
+  margin-bottom: 1rem;
+}
+
+.evento::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(to bottom, #4299e1, #9f7aea);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.evento:hover {
+  transform: translateX(4px);
+  border-left-color: #cbd5e0;
+}
+
+.evento:hover::before {
+  opacity: 1;
 }
 
 .evento h2 {
-  font-size: 1.5rem;
-  color: #444;
+  font-size: 1.25rem;
+  color: #2d3748;
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  position: relative;
+  padding-left: 1.75rem;
 }
 
+.evento h2::before {
+  content: '\f073';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 400;
+  color: #718096;
+  font-size: 1em;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.8;
+}
+
+/* Contenido del evento */
 .contenido-evento {
   display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  gap: 2rem;
+  margin-top: 1.25rem;
+  align-items: flex-start;
 }
 
 .contenido-evento img {
-  width: 180px;
-  height: auto;
-  border-radius: 8px;
+  width: 220px;
+  height: 140px;
   object-fit: cover;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  border: 1px solid #edf2f7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
 }
 
-.contenido-evento a {
-  font-weight: bold;
-  color: #0077cc;
+.contenido-evento img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.contenido-evento > div {
+  flex: 1;
+  min-width: 0;
+  padding: 0.25rem 0;
+}
+
+a {
+  color: #2b6cb0;
   text-decoration: none;
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  position: relative;
 }
 
-.contenido-evento a:hover {
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #3182ce;
+  transition: width 0.3s ease;
+}
+
+a:hover {
+  color: #3182ce;
+  transform: none;
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+p {
+  color: #718096;
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+}
+
+p::before {
+  content: '\f017';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 400;
+  color: #a0aec0;
+  font-size: 0.9em;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .agenda {
+    padding: 1.5rem;
+    margin: 1rem;
+    border-radius: 8px;
+  }
+  
+  .agenda h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .contenido-evento {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .contenido-evento img {
+    width: 100%;
+    max-width: 100%;
+    height: 180px;
+    margin: 0 0 0.5rem;
+  }
+  
+  .evento {
+    padding-left: 1.25rem;
+    margin: 2rem 0;
+  }
+  
+  .evento h2 {
+    font-size: 1.15rem;
+    padding-left: 1.5rem;
+  }
+  
+  .subtitulo {
+    font-size: 1rem;
+    margin: 2.5rem 0 1.25rem;
+  }
+}
+
+/* Efecto de carga suave para eventos */
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(8px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.evento {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.evento:nth-child(1) { animation-delay: 0.1s; }
+.evento:nth-child(2) { animation-delay: 0.2s; }
+.evento:nth-child(3) { animation-delay: 0.3s; }
+.evento:nth-child(4) { animation-delay: 0.4s; }
+.evento:nth-child(5) { animation-delay: 0.5s; }
+
+/* Mejoras de accesibilidad */
+:focus-visible {
+  outline: 2px solid #3182ce;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Mejora de contraste para accesibilidad */
+a:focus {
+  color: #2c5282;
   text-decoration: underline;
-}
-
-.contenido-evento p {
-  margin: 0.5rem 0 0;
-  color: #666;
 }
