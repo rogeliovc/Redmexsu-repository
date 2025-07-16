@@ -1,0 +1,71 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+}
+
+.agenda {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.agenda h1 {
+  font-size: 2rem;
+  border-bottom: 3px solid #0077cc;
+  padding-bottom: 0.5rem;
+  color: #333;
+}
+
+.subtitulo {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+  color: #005599;
+  font-weight: bold;
+  border-left: 5px solid #005599;
+  padding-left: 10px;
+}
+
+.evento {
+  margin: 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.evento h2 {
+  font-size: 1.5rem;
+  color: #444;
+}
+
+.contenido-evento {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.contenido-evento img {
+  width: 180px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.contenido-evento a {
+  font-weight: bold;
+  color: #0077cc;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.contenido-evento a:hover {
+  text-decoration: underline;
+}
+
+.contenido-evento p {
+  margin: 0.5rem 0 0;
+  color: #666;
+}
