@@ -5,8 +5,6 @@
 .env.test.local
 .env.production.local
 
-# Configuración sensible
-config.js
 
 # Editor directories and files
 .idea

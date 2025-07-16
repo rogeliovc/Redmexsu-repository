@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
     <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
     <link rel="stylesheet" href="/css/Pages/membersPageStyles.css">
+    <link rel="stylesheet" href="/css/componentsStyles/componentsStyles.css">
     <script src="/js/Components/header.js" defer></script>
+    <script type="module" src="/js/Pages/Members/membersPage.js" defer></script>
 </head>
 <body>
     <!-- Header dinámico -->
@@ -22,7 +24,13 @@
       <section>
         <div class="institutionsSection">
           <h2>Instituciones</h2>
-          <div id="institutionsGrid" class="gridContainermembers">
+          <div class="all-institutions-btn-container">
+            <button id="allInstitutionsBtn" class="all-institutions-btn active" onclick="filtrarMiembrosPorInstitucion('Todos')">
+              <i class="fas fa-users"></i>
+              <span>Todos los miembros</span>
+            </button>
+          </div>
+          <div class="institutions-container" id="institutionsGrid">
             <!-- Las instituciones se cargarán aquí -->
           </div>
         </div>
@@ -41,8 +49,6 @@
     <footer id="footer-container"></footer>
 
     <!-- Scripts -->
-    <script type="module" src="/js/Pages/Members/membersPage.js"></script>
-    
     <script>
         // Cargar footer
         fetch('/components/footer.html')
