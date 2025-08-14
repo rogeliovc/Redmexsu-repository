@@ -1,6 +1,10 @@
 // Importar el servicio de Supabase
 import { getSupabase } from '../../services/supabaseService.js';
 
+// Variables globales
+let allMembers = [];
+let allInstitutions = [];
+
 // Cargar footer
 fetch('/components/footer.html')
     .then(res => res.text())
@@ -10,23 +14,183 @@ fetch('/components/footer.html')
     })
     .catch(error => console.error('Error al cargar el footer:', error));
 
+// Función para cambiar entre pestañas
+function showTab(tabName) {
+    console.log('Mostrando pestaña:', tabName);
+    
+    // Ocultar todos los contenidos de pestañas
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Desactivar todos los botones de pestaña
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    
+    try {
+        // Mostrar la pestaña seleccionada
+        const contentElement = document.getElementById(`${tabName}Content`);
+        const buttonElement = document.querySelector(`.tab-button[data-tab="${tabName}"]`);
+        
+        if (contentElement && buttonElement) {
+            contentElement.classList.add('active');
+            buttonElement.classList.add('active');
+            
+            // Actualizar la URL sin recargar la página
+            const newUrl = `${window.location.pathname}?tab=${tabName}`;
+            window.history.pushState({ tab: tabName }, '', newUrl);
+            
+            // Cargar contenido según la pestaña
+            if (tabName === 'members') {
+                console.log('Cargando miembros...');
+                mostrarTodosLosMiembros();
+            } else if (tabName === 'institutions') {
+                console.log('Cargando instituciones...');
+                // Cargar las instituciones desde la base de datos
+                cargarInstituciones().then(instituciones => {
+                    if (instituciones && instituciones.length > 0) {
+                        mostrarInstituciones(instituciones);
+                    }
+                }).catch(error => {
+                    console.error('Error al cargar instituciones:', error);
+                });
+            }
+        } else {
+            console.error('No se pudo encontrar el elemento de la pestaña:', tabName);
+        }
+    } catch (error) {
+        console.error('Error en showTab:', error);
+    }
+}
+
 // Manejador para el evento popstate (navegación con el botón de retroceso/avanzar)
 window.addEventListener('popstate', async (event) => {
     console.log('Navegación detectada, actualizando vista...');
     const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab') || 'members';
     const institucionParam = urlParams.get('institucion');
     
+    // Mostrar la pestaña correspondiente
+    showTab(tabParam);
+    
+    // Si hay un parámetro de institución, filtrar
     if (institucionParam) {
-        // Filtrar por la institución del parámetro de URL
         await filtrarMiembrosPorInstitucion(institucionParam);
-    } else {
-        // Mostrar todos los miembros
-        await filtrarMiembrosPorInstitucion('Todos');
     }
 });
 
+// Función para mostrar todos los miembros
+async function mostrarTodosLosMiembros() {
+    const grid = document.getElementById('membersGrid');
+    if (!grid) return;
+    
+    if (allMembers.length === 0) {
+        grid.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Cargando miembros...</p>
+            </div>
+        `;
+        
+        try {
+            const supabase = await getSupabase();
+            const { data: miembros, error } = await supabase
+                .from('miembros')
+                .select('*')
+                .order('nombre', { ascending: true });
+                
+            if (error) throw error;
+            
+            allMembers = miembros || [];
+            mostrarMiembros(allMembers);
+        } catch (error) {
+            console.error('Error al cargar miembros:', error);
+            grid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error al cargar los miembros. Por favor, intenta recargar la página.</p>
+                    <p><small>${error.message}</small></p>
+                    <button onclick="mostrarTodosLosMiembros()" class="retry-button">Reintentar</button>
+                </div>
+            `;
+        }
+    } else {
+        mostrarMiembros(allMembers);
+    }
+}
+
+// Función para cargar los miembros del comité
+async function cargarComite() {
+    try {
+        console.log('Cargando comité directivo...');
+        const supabase = await getSupabase();
+        if (!supabase) throw new Error('No se pudo conectar a la base de datos');
+        
+        // Obtener solo los miembros del comité
+        const { data: miembros, error } = await supabase
+            .from('miembros')
+            .select('*')
+            .eq('comite', true)
+            .order('nombre', { ascending: true });
+            
+        if (error) throw error;
+        
+        // Mostrar el comité si hay miembros
+        const committeeGrid = document.getElementById('committeeGrid');
+        if (miembros && miembros.length > 0 && committeeGrid) {
+            console.log(`Mostrando ${miembros.length} miembros del comité`);
+            // Usar la función mostrarMiembros para mantener consistencia
+            await mostrarMiembros(miembros, null, 'committeeGrid');
+        } else if (committeeGrid) {
+            committeeGrid.innerHTML = `
+                <div class="no-members-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No se encontraron miembros del comité directivo.</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error al cargar el comité:', error);
+        const committeeGrid = document.getElementById('committeeGrid');
+        if (committeeGrid) {
+            committeeGrid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error al cargar el comité directivo.</p>
+                    <p><small>${error.message}</small></p>
+                </div>
+            `;
+        }
+    }
+}
+
 // Inicializar la aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM cargado, inicializando pestañas...');
+    
+    // Configurar manejadores de eventos para las pestañas
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+            console.log('Botón de pestaña clickeado:', tabName);
+            showTab(tabName);
+        });
+    });
+    
+    // Cargar el comité directivo inmediatamente
+    await cargarComite();
+    
+    // Verificar si hay una pestaña en la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    
+    // Mostrar la pestaña correcta basada en la URL o la pestaña por defecto
+    if (tabParam === 'institutions') {
+        showTab('institutions');
+    } else {
+        showTab('members');
+    }
     console.log('DOM cargado, inicializando aplicación...');
     try {
         console.log('Obteniendo cliente Supabase...');
@@ -35,28 +199,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Cargar instituciones
         console.log('Iniciando carga de instituciones...');
-        await cargarInstituciones();
+        allInstitutions = await cargarInstituciones();
         console.log('Carga de instituciones completada');
         
-        // Verificar si hay un parámetro de URL para filtrar por institución
+        // Verificar la pestaña activa desde la URL
         const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get('tab') || 'members';
         const institucionParam = urlParams.get('institucion');
         
+        // Mostrar la pestaña correspondiente
+        showTab(tabParam);
+        
+        // Si hay un parámetro de institución, filtrar
         if (institucionParam) {
-            // Filtrar por la institución del parámetro de URL
             console.log(`Filtrando por institución desde URL: ${institucionParam}`);
             await filtrarMiembrosPorInstitucion(institucionParam);
-        } else {
-            // Cargar y mostrar todos los miembros por defecto
-            console.log('Iniciando carga de todos los miembros...');
-            await cargarMiembros();
-            console.log('Carga de miembros completada');
-            
-            // Seleccionar automáticamente el botón "Todos"
-            const allInstitutionsBtn = document.getElementById('allInstitutionsBtn');
-            if (allInstitutionsBtn) {
-                allInstitutionsBtn.classList.add('active');
-            }
         }
         
     } catch (error) {
@@ -78,20 +235,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Función para cargar y mostrar miembros
 async function cargarMiembros(institucionTitulo = null) {
     console.log('Iniciando carga de miembros...');
-    const grid = document.getElementById('membersGrid');
+    const membersGrid = document.getElementById('membersGrid');
+    const committeeGrid = document.getElementById('committeeGrid');
     
-    if (!grid) {
+    if (!membersGrid) {
         console.error('No se encontró el contenedor de miembros con ID "membersGrid"');
         return [];
     }
 
-    // Mostrar mensaje de carga
-    grid.innerHTML = `
+    // Mostrar mensaje de carga para miembros regulares
+    membersGrid.innerHTML = `
         <div class="loading-container">
             <div class="loading-spinner"></div>
             <p>${institucionTitulo ? `Cargando miembros de ${institucionTitulo}...` : 'Cargando todos los miembros...'}</p>
         </div>
     `;
+    
+    // Mostrar mensaje de carga para el comité
+    if (committeeGrid) {
+        committeeGrid.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Cargando comité directivo...</p>
+            </div>
+        `;
+    }
     
     try {
         // Obtener instancia de Supabase
@@ -118,80 +286,84 @@ async function cargarMiembros(institucionTitulo = null) {
         console.log('Miembros obtenidos de Supabase:', miembros ? miembros.length : 0);
         
         if (!miembros || miembros.length === 0) {
-            grid.innerHTML = `
+            membersGrid.innerHTML = `
                 <div class="no-members-message">
-                    <i class="fas fa-users-slash"></i>
-                    <p>No se encontraron miembros en la base de datos</p>
+                    <i class="fas fa-info-circle"></i>
+                    <p>No se encontraron miembros${institucionTitulo ? ` para la institución "${institucionTitulo}"` : ''}.</p>
                 </div>
             `;
             return [];
         }
         
-        // Actualizar contadores de instituciones
-        actualizarContadorMiembros(miembros);
+        // Guardar todos los miembros para búsquedas/filtrados posteriores
+        allMembers = miembros;
         
-        // Filtrar si es necesario
-        let miembrosAMostrar = [...(miembros || [])];
-        if (institucionTitulo && institucionTitulo !== 'Todos') {
-            miembrosAMostrar = miembrosAMostrar.filter(m => m.instituciones_id === institucionTitulo);
-            
-            if (miembrosAMostrar.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-members-message">
-                        <i class="fas fa-users-slash"></i>
-                        <p>No se encontraron miembros para esta institución</p>
-                        <button onclick="filtrarMiembrosPorInstitucion('Todos')" class="btn btn-primary mt-3">
-                            Ver todos los miembros
-                        </button>
-                    </div>
-                `;
-                return [];
+        // Filtrar miembros del comité (donde comite = true)
+        const miembrosComite = miembros.filter(miembro => miembro.comite === true);
+        console.log('Miembros del comité encontrados:', miembrosComite.length);
+        
+        // Mostrar el comité si hay miembros
+        if (miembrosComite.length > 0 && committeeGrid) {
+            // Ocultar la sección de comité si estamos mostrando una institución específica
+            if (!institucionTitulo) {
+                document.querySelector('.committee-section').style.display = 'block';
+                await mostrarMiembros(miembrosComite, null, 'committeeGrid', true);
+            } else {
+                document.querySelector('.committee-section').style.display = 'none';
             }
+        } else if (committeeGrid) {
+            committeeGrid.innerHTML = `
+                <div class="no-members-message">
+                    <i class="fas fa-info-circle"></i>
+                    <p>No se encontraron miembros del comité directivo.</p>
+                </div>
+            `;
         }
         
-        // Mostrar los miembros
-        mostrarMiembros(miembrosAMostrar, institucionTitulo);
-        return miembrosAMostrar;
+        // Mostrar los miembros en la interfaz (filtrados por institución si es necesario)
+        await mostrarMiembros(miembros, institucionTitulo, 'membersGrid');
+        
+        // Actualizar contadores en las tarjetas de instituciones
+        actualizarContadorMiembros(miembros);
+        
+        return miembros;
         
     } catch (error) {
         console.error('Error al cargar miembros:', error);
         const errorMessage = error.message || 'Error desconocido al cargar los miembros';
-        grid.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Error al cargar los miembros. Por favor, intenta recargar la página.</p>
-                <p><small>${errorMessage}</small></p>
-                <button onclick="cargarMiembros('${institucionTitulo || ''}')" class="retry-button">Reintentar</button>
-            </div>
-        `;
+        const errorGrid = document.getElementById('membersGrid');
+        if (errorGrid) {
+            errorGrid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error al cargar los miembros. Por favor, intenta recargar la página.</p>
+                    <p><small>${errorMessage}</small></p>
+                    <button onclick="cargarMiembros('${institucionTitulo || ''}')" class="retry-button">Reintentar</button>
+                </div>
+            `;
+        }
         return [];
     }
 }
-
-// Función para mostrar los miembros en la interfaz
-// Función para cargar instituciones
 async function cargarInstituciones() {
     console.log('Iniciando carga de instituciones...');
     const grid = document.getElementById('institutionsGrid');
+    const now = Date.now();
+    const CACHE_KEY = 'instituciones_cache';
     
-    if (!grid) {
-        console.error('No se encontró el contenedor de instituciones');
-        return;
+    // Mostrar mensaje de carga solo si estamos en la pestaña de instituciones
+    const isInstitutionsTabActive = document.getElementById('institutionsContent')?.classList.contains('active');
+    
+    if (isInstitutionsTabActive && grid) {
+        grid.innerHTML = `
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Cargando instituciones...</p>
+            </div>
+        `;
     }
 
-    // Mostrar mensaje de carga
-    grid.innerHTML = `
-        <div class="loading-container">
-            <div class="loading-spinner"></div>
-            <p>Cargando instituciones...</p>
-        </div>
-    `;
-
-    const CACHE_KEY = 'instituciones_cache';
-    const now = Date.now();
-    
     try {
-        console.log('Forzando recarga de instituciones desde Supabase...');
         console.log('Obteniendo cliente Supabase...');
         const supabase = await getSupabase();
         
@@ -200,44 +372,55 @@ async function cargarInstituciones() {
         }
         
         console.log('Consultando la tabla de instituciones...');
-        console.log('Obteniendo datos de instituciones...');
-        
-        // Primero intentamos con las columnas que necesitamos
         const { data: instituciones, error } = await supabase
             .from('instituciones')
-            .select('id, titulo, logo_url, pagina_web')
-            .order('titulo', { ascending: true });
-        
+            .select('*')
+            .order('nombre', { ascending: true });
+            
         if (error) {
-            console.error('Error en la consulta a instituciones:', error);
-            
-            // Si falla, intentamos con una consulta más simple
-            console.log('Intentando con consulta simple...');
-            const { data: simpleInstituciones, error: simpleError } = await supabase
-                .from('instituciones')
-                .select('*')
-                .order('titulo', { ascending: true });
-                
-            if (simpleError) {
-                console.error('Error en consulta simple:', simpleError);
-                throw new Error('No se pudo cargar la información de instituciones');
+            console.error('Error al obtener instituciones:', error);
+            throw new Error(`Error al cargar las instituciones: ${error.message}`);
+        }
+
+        // Si no hay datos, mostrar un mensaje
+        if (!instituciones || instituciones.length === 0) {
+            console.warn('No se encontraron instituciones en la base de datos');
+            if (grid) {
+                grid.innerHTML = `
+                    <div class="no-institutions-message">
+                        <i class="fas fa-university"></i>
+                        <p>No se encontraron instituciones registradas</p>
+                    </div>
+                `;
             }
-            
-            console.log(`Se encontraron ${simpleInstituciones.length} instituciones (con consulta simple)`);
-            mostrarInstituciones(simpleInstituciones);
-            return;
+            return [];
+        }
+
+        // Si hay un error en los datos, usar datos de ejemplo
+        if (instituciones.some(inst => !inst.nombre)) {
+            console.warn('Datos de instituciones inválidos, usando datos de ejemplo');
+            const simpleInstituciones = [
+                { id: 1, nombre: 'Institución 1', logo_url: 'https://via.placeholder.com/150', descripcion: 'Descripción de la institución 1' },
+                { id: 2, nombre: 'Institución 2', logo_url: 'https://via.placeholder.com/150', descripcion: 'Descripción de la institución 2' },
+                { id: 3, nombre: 'Institución 3', logo_url: 'https://via.placeholder.com/150', descripcion: 'Descripción de la institución 3' },
+            ];
+            if (isInstitutionsTabActive) {
+                await mostrarInstituciones(simpleInstituciones);
+            }
+            return simpleInstituciones;
         }
         
-        const institucionesData = instituciones || [];
-        console.log(`Se encontraron ${institucionesData.length} instituciones`);
+        console.log(`Se encontraron ${instituciones.length} instituciones`);
         
-        // Mostrar las instituciones
-        mostrarInstituciones(institucionesData);
-
+        // Si estamos en la pestaña de instituciones, mostrarlas
+        if (isInstitutionsTabActive) {
+            await mostrarInstituciones(instituciones);
+        }
+        
         // Guardar en caché (sin bloquear la ejecución si falla)
         try {
             const cacheData = {
-                data: institucionesData,
+                data: instituciones,
                 timestamp: now
             };
             localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
@@ -245,15 +428,20 @@ async function cargarInstituciones() {
             console.warn('No se pudo guardar en caché:', e);
         }
         
+        return instituciones;
+        
     } catch (error) {
         console.error('Error al cargar instituciones:', error);
-        grid.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <p>Error al cargar las instituciones: ${error.message}</p>
-                <button onclick="cargarInstituciones()" class="retry-button">Reintentar</button>
-            </div>
-        `;
+        if (grid) {
+            grid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error al cargar las instituciones: ${error.message}</p>
+                    <button onclick="cargarInstituciones()" class="retry-button">Reintentar</button>
+                </div>
+            `;
+        }
+        return [];
     }
 }
 
@@ -305,11 +493,8 @@ async function mostrarInstituciones(instituciones) {
             const logoUrl = institucion.logo_url || '';
             const iniciales = getInitials(titulo);
             
-            // Escapar comillas simples en el título para el onclick
-            const tituloEscapado = titulo.replace(/'/g, "\\'");
-            
             html += `
-                <div class="institutionCard" data-titulo="${titulo}" onclick="filtrarMiembrosPorInstitucion('${tituloEscapado}')">
+                <div class="institutionCard" data-titulo="${titulo}">
                     <div class="institutionLogo">
                         ${logoUrl 
                             ? `<img src="${logoUrl}" alt="${titulo}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'institutionInitials\'>${iniciales}</div>'">`
@@ -322,6 +507,15 @@ async function mostrarInstituciones(instituciones) {
         });
 
         grid.innerHTML = html;
+        
+        // Agregar manejadores de eventos a las tarjetas de institución
+        document.querySelectorAll('.institutionCard').forEach(card => {
+            card.addEventListener('click', async () => {
+                const titulo = card.getAttribute('data-titulo');
+                console.log('Clic en institución:', titulo);
+                await filtrarMiembrosPorInstitucion(titulo);
+            });
+        });
         
         // Actualizar contadores de miembros
         await cargarMiembros();
@@ -382,12 +576,12 @@ async function mostrarInstituciones(instituciones) {
 }
 
 // Función para mostrar los miembros en la interfaz, agrupados por título y/o institución
-async function mostrarMiembros(miembros, institucionTitulo = null) {
-    console.log('Mostrando miembros...');
-    const grid = document.getElementById('membersGrid');
+async function mostrarMiembros(miembros, institucionTitulo = null, targetGridId = 'membersGrid') {
+    console.log('Mostrando miembros en el contenedor:', targetGridId);
+    const grid = document.getElementById(targetGridId);
     
     if (!grid) {
-        console.error('No se encontró el contenedor de miembros');
+        console.error('No se encontró el contenedor de miembros con ID:', targetGridId);
         return;
     }
 
@@ -425,68 +619,91 @@ async function mostrarMiembros(miembros, institucionTitulo = null) {
         // Ordenar miembros por nombre
         miembrosFiltrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
 
-        // Función para generar el HTML de una tarjeta de miembro
-        const generarTarjetaMiembro = (miembro, mostrarInstitucion = false) => {
+        // Función para generar el HTML de un elemento de lista de miembro
+        const generarFilaMiembro = (miembro, mostrarInstitucion = false) => {
             const nombre = miembro.nombre || 'Sin nombre';
             const correo = miembro.correo || '';
             const fotoUrl = miembro.foto_url || '';
+            const puesto = miembro.puesto || '';
             const iniciales = getInitials(nombre);
             const institucion = mostrarInstitucion && miembro.instituciones_id 
-                ? `<p class="member-institution">${miembro.instituciones_id}</p>` 
+                ? `<span class="member-list-institution">${miembro.instituciones_id}</span>` 
                 : '';
 
             return `
-                <div class="member-card">
-                    <div class="member-header">
+                <div class="member-list-item">
+                    <div class="member-list-avatar">
                         ${fotoUrl 
                             ? `<img src="${fotoUrl}" alt="${nombre}" loading="lazy">`
                             : `<div class="member-initials">${iniciales}</div>`}
                     </div>
-                    <div class="member-content">
-                        <h3>${nombre}</h3>
-                        ${correo ? `<p class="member-email">${correo}</p>` : ''}
-                        ${institucion}
+                    <div class="member-list-info">
+                        <h3 class="member-list-name">${nombre}</h3>
+                        <div class="member-list-details">
+                            ${puesto ? `<span class="member-list-position"><i class="fas fa-briefcase"></i> ${puesto}</span>` : ''}
+                            ${correo ? `<span class="member-list-email"><i class="fas fa-envelope"></i> ${correo}</span>` : ''}
+                            ${institucion}
+                        </div>
                     </div>
                 </div>
             `;
         };
 
-        // Siempre agrupar por título para mantener consistencia
+        // Agrupar miembros por título si hay títulos definidos
         const grupos = {};
+        const miembrosSinTitulo = [];
         
-        // Agrupar miembros por título
+        // Separar miembros con y sin título
         miembrosFiltrados.forEach(miembro => {
-            const titulo = miembro.titulo || 'Sin título';
-            if (!grupos[titulo]) {
-                grupos[titulo] = [];
+            if (miembro.titulo) {
+                if (!grupos[miembro.titulo]) {
+                    grupos[miembro.titulo] = [];
+                }
+                grupos[miembro.titulo].push(miembro);
+            } else {
+                miembrosSinTitulo.push(miembro);
             }
-            grupos[titulo].push(miembro);
         });
 
-        // Generar HTML para cada grupo
-        let gruposHTML = '';
+        // Generar HTML para la lista de miembros
+        let listaHTML = '<div class="member-list-container">';
+        
+        // Agregar miembros agrupados por título
         const titulosOrdenados = Object.keys(grupos).sort();
-
         for (const titulo of titulosOrdenados) {
             const miembrosGrupo = grupos[titulo];
-            const miembrosHTML = miembrosGrupo
-                .map(miembro => generarTarjetaMiembro(miembro, !esFiltroActivo)) // Mostrar institución solo cuando no hay filtro
-                .join('');
-
-            // Solo mostrar el título del grupo si hay más de un grupo o si el título no está vacío
-            const mostrarTituloGrupo = titulosOrdenados.length > 1 || titulo !== 'Sin título';
             
-            gruposHTML += `
-                <div class="member-group">
-                    ${mostrarTituloGrupo ? `<h2 class="group-title">${titulo}</h2>` : ''}
-                    <div class="members-container">
-                        ${miembrosHTML}
-                    </div>
-                </div>
-            `;
+            // Agregar título del grupo
+            listaHTML += `<div class="member-group">
+                            <h2 class="group-title">${titulo}</h2>`;
+            
+            // Agregar miembros del grupo
+            listaHTML += miembrosGrupo
+                .map(miembro => generarFilaMiembro(miembro, !esFiltroActivo))
+                .join('');
+                
+            listaHTML += '</div>'; // Cerrar el grupo
         }
-
-        grid.innerHTML = gruposHTML;
+        
+        // Agregar miembros sin título al final (sin agrupar)
+        if (miembrosSinTitulo.length > 0) {
+            listaHTML += '<div class="member-group">';
+            
+            // Solo agregar el título si hay miembros con título
+            if (titulosOrdenados.length > 0) {
+                listaHTML += '<h2 class="group-title">Miembros</h2>';
+            }
+            
+            // Agregar miembros sin título
+            listaHTML += miembrosSinTitulo
+                .map(miembro => generarFilaMiembro(miembro, !esFiltroActivo))
+                .join('');
+                
+            listaHTML += '</div>'; // Cerrar el grupo
+        }
+        
+        listaHTML += '</div>'; // Cerrar el contenedor principal
+        grid.innerHTML = listaHTML;
     } catch (error) {
         console.error('Error al mostrar miembros:', error);
         grid.innerHTML = `
@@ -549,25 +766,87 @@ window.filtrarMiembrosPorInstitucion = async function(institucionTitulo) {
     const cards = document.querySelectorAll('.institutionCard');
     cards.forEach(card => card.classList.remove('active'));
     
-    // Activar la tarjeta correspondiente si no es 'Todos'
-    if (institucionTitulo && institucionTitulo !== 'Todos') {
-        const targetCard = document.querySelector(`.institutionCard[data-titulo="${institucionTitulo}"]`);
-        if (targetCard) targetCard.classList.add('active');
+    // Elementos del DOM
+    const membersContainer = document.getElementById('institutionMembersContainer');
+    const membersTitle = document.getElementById('institutionMembersTitle');
+    const membersGrid = document.getElementById('institutionMembersGrid');
+    
+    // Si no hay institución seleccionada o es 'Todos', ocultar la sección de miembros
+    if (!institucionTitulo || institucionTitulo === 'Todos') {
+        if (membersContainer) {
+            membersContainer.style.display = 'none';
+        }
+        return;
     }
     
-    // Mostrar mensaje de carga
-    const grid = document.getElementById('membersGrid');
-    if (grid) {
-        grid.innerHTML = `
-            <div class="loading-container">
-                <div class="loading-spinner"></div>
-                <p>${institucionTitulo ? `Cargando miembros de ${institucionTitulo}...` : 'Cargando todos los miembros...'}</p>
-            </div>
-        `;
+    // Activar la tarjeta correspondiente
+    const targetCard = document.querySelector(`.institutionCard[data-titulo="${institucionTitulo}"]`);
+    if (targetCard) {
+        targetCard.classList.add('active');
+        
+        // Mostrar la sección de miembros de la institución
+        if (membersContainer && membersTitle && membersGrid) {
+            membersTitle.textContent = `Miembros de ${institucionTitulo}`;
+            membersContainer.style.display = 'block';
+            
+            // Mostrar mensaje de carga
+            membersGrid.innerHTML = `
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>Cargando miembros de ${institucionTitulo}...</p>
+                </div>
+            `;
+            
+            // Desplazarse suavemente a la sección de miembros
+            membersContainer.scrollIntoView({ behavior: 'smooth' });
+        }
     }
     
     // Cargar los miembros con el filtro correspondiente
-    await cargarMiembros(institucionTitulo);
+    try {
+        const supabase = await getSupabase();
+        if (!supabase) {
+            throw new Error('No se pudo conectar a la base de datos');
+        }
+        
+        // Obtener miembros de la institución
+        const { data: miembros, error } = await supabase
+            .from('miembros')
+            .select('*')
+            .eq('instituciones_id', institucionTitulo)
+            .order('nombre', { ascending: true });
+            
+        if (error) {
+            throw new Error(`Error al cargar los miembros: ${error.message}`);
+        }
+        
+        console.log(`Se encontraron ${miembros ? miembros.length : 0} miembros para la institución ${institucionTitulo}`);
+        
+        // Mostrar los miembros
+        if (membersGrid) {
+            if (!miembros || miembros.length === 0) {
+                membersGrid.innerHTML = `
+                    <div class="no-members-message">
+                        <i class="fas fa-users-slash"></i>
+                        <p>No se encontraron miembros para esta institución</p>
+                    </div>
+                `;
+            } else {
+                // Usar la función mostrarMiembros para mostrar los resultados
+                mostrarMiembros(miembros, institucionTitulo, 'institutionMembersGrid');
+            }
+        }
+    } catch (error) {
+        console.error('Error al cargar miembros de la institución:', error);
+        if (membersGrid) {
+            membersGrid.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error al cargar los miembros: ${error.message}</p>
+                </div>
+            `;
+        }
+    }
 };
 
 // Función auxiliar para obtener las iniciales de un nombre
