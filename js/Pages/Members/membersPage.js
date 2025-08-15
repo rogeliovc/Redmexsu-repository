@@ -140,8 +140,57 @@ async function cargarComite() {
         const committeeGrid = document.getElementById('committeeGrid');
         if (miembros && miembros.length > 0 && committeeGrid) {
             console.log(`Mostrando ${miembros.length} miembros del comité`);
-            // Usar la función mostrarMiembros para mantener consistencia
-            await mostrarMiembros(miembros, null, 'committeeGrid');
+            
+            // Limpiar el contenedor
+            committeeGrid.innerHTML = '';
+            
+            // Crear elementos para cada miembro del comité
+            miembros.forEach((miembro, index) => {
+                const memberElement = document.createElement('div');
+                memberElement.className = 'committee-member';
+                
+                // Obtener iniciales para el avatar
+                const nombres = miembro.nombre ? miembro.nombre.split(' ') : [];
+                const iniciales = nombres.length > 0 
+                    ? (nombres[0][0] + (nombres.length > 1 ? nombres[1][0] : nombres[0][nombres[0].length > 1 ? 1 : 0])).toUpperCase()
+                    : '??';
+                
+                // Crear el contenido del miembro con estructura optimizada
+                memberElement.innerHTML = `
+                    <div class="member-avatar">
+                        ${miembro.foto_url 
+                            ? `<img src="${miembro.foto_url}" alt="${miembro.nombre || 'Miembro'}">`
+                            : `<div class="member-avatar-initials">${iniciales}</div>`
+                        }
+                    </div>
+                    <div class="member-details">
+                        <div class="member-info">
+                            <h3 class="member-name" title="${miembro.nombre || ''}">${miembro.nombre || 'Nombre no disponible'}</h3>
+                            <p class="member-role">${miembro.puesto || 'Miembro del Comité'}</p>
+                            ${miembro.descripcion ? `<p class="member-bio">${miembro.descripcion}</p>` : ''}
+                        </div>
+                        <div class="member-social">
+                            ${miembro.linkedin ? `<a href="${miembro.linkedin}" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin"></i></a>` : ''}
+                            ${miembro.twitter ? `<a href="${miembro.twitter}" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>` : ''}
+                            ${miembro.email ? `<a href="mailto:${miembro.email}" title="Correo electrónico"><i class="fas fa-envelope"></i></a>` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                // Agregar efecto de aparición secuencial
+                memberElement.style.opacity = '0';
+                memberElement.style.transform = 'translateY(10px)';
+                memberElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                
+                committeeGrid.appendChild(memberElement);
+                
+                // Animación de aparición
+                setTimeout(() => {
+                    memberElement.style.opacity = '1';
+                    memberElement.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+            
         } else if (committeeGrid) {
             committeeGrid.innerHTML = `
                 <div class="no-members-message">
