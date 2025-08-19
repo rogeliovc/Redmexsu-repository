@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REDMEXSU</title>
+    <link rel="stylesheet" href="../../css/componentsStyles/headerStyles.css">
+    <link rel="stylesheet" href="../../css/componentsStyles/footerStyles.css">
+    <link rel="stylesheet" href="../../css/Pages/activitiesPageStyles.css">
+    <script src="/js/Components/header.js" defer></script>
+</head>
+<body>
+    <header id="header-container"></header>
+    <main>
+        <h1>Actividades</h1>
+    </main>
+    <footer id="footer-container"></footer>
+
+    <script src="/js/Components/footer.js" defer></script>
+    <script src="/js/Pages/Activities/activitiesPage.js" defer></script>
+    <script>
+        // Cargar footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => document.getElementById('footer-container').innerHTML = html)
+            .catch(error => console.error('Error cargando el footer:', error));
+    </script>
+</body>
+</html>
