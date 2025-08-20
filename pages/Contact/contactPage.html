@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="../../css/componentsStyles/footerStyles.css">
     <link rel="stylesheet" href="../../css/Pages/contacPageStyles.css">
     <script src="/js/Components/header.js" defer></script>
+
+    <!-- Cosas del script de maps -->
+     <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBknMrE91F4mso9Rj-ZR8eTOiHc9h6Antk">
+  </script>
+
+  <!-- Importar el componente -->
+  <script type="module" src="/js/Components/location-ma.js"></script>
 </head>
 <body>
     <!-- Header dinámico -->
@@ -46,6 +54,8 @@
         </form>
       </section>
     </main>
+
+    <location-map></location-map>
 
     <!-- Footer dinámico -->
     <footer id="footer-container"></footer>
