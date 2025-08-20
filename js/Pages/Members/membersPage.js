@@ -5,15 +5,6 @@ import { getSupabase } from '../../services/supabaseService.js';
 let allMembers = [];
 let allInstitutions = [];
 
-// Cargar footer
-fetch('/components/footer.html')
-    .then(res => res.text())
-    .then(html => {
-        const footer = document.getElementById('footer-container');
-        if (footer) footer.innerHTML = html;
-    })
-    .catch(error => console.error('Error al cargar el footer:', error));
-
 // Función para cambiar entre pestañas
 function showTab(tabName) {
     console.log('Mostrando pestaña:', tabName);
@@ -300,8 +291,11 @@ async function cargarMiembros(institucionTitulo = null) {
         </div>
     `;
     
-    // Mostrar mensaje de carga para el comité
-    if (committeeGrid) {
+    // Solo mostrar carga del comité si no está ya cargado
+    const isCommitteeEmpty = !committeeGrid || committeeGrid.innerHTML.trim() === '' || 
+                           committeeGrid.querySelector('.loading-container');
+    
+    if (isCommitteeEmpty && committeeGrid) {
         committeeGrid.innerHTML = `
             <div class="loading-container">
                 <div class="loading-spinner"></div>
@@ -347,26 +341,29 @@ async function cargarMiembros(institucionTitulo = null) {
         // Guardar todos los miembros para búsquedas/filtrados posteriores
         allMembers = miembros;
         
-        // Filtrar miembros del comité (donde comite = true)
-        const miembrosComite = miembros.filter(miembro => miembro.comite === true);
-        console.log('Miembros del comité encontrados:', miembrosComite.length);
-        
-        // Mostrar el comité si hay miembros
-        if (miembrosComite.length > 0 && committeeGrid) {
-            // Ocultar la sección de comité si estamos mostrando una institución específica
-            if (!institucionTitulo) {
-                document.querySelector('.committee-section').style.display = 'block';
-                await mostrarMiembros(miembrosComite, null, 'committeeGrid', true);
-            } else {
-                document.querySelector('.committee-section').style.display = 'none';
+        // Solo cargar el comité si no está ya cargado
+        if (isCommitteeEmpty) {
+            // Filtrar miembros del comité (donde comite = true)
+            const miembrosComite = miembros.filter(miembro => miembro.comite === true);
+            console.log('Miembros del comité encontrados:', miembrosComite.length);
+            
+            // Mostrar el comité si hay miembros
+            if (miembrosComite.length > 0 && committeeGrid) {
+                // Ocultar la sección de comité si estamos mostrando una institución específica
+                if (!institucionTitulo) {
+                    document.querySelector('.committee-section').style.display = 'block';
+                    await mostrarMiembros(miembrosComite, null, 'committeeGrid', true);
+                } else {
+                    document.querySelector('.committee-section').style.display = 'none';
+                }
+            } else if (committeeGrid) {
+                committeeGrid.innerHTML = `
+                    <div class="no-members-message">
+                        <i class="fas fa-info-circle"></i>
+                        <p>No se encontraron miembros del comité directivo.</p>
+                    </div>
+                `;
             }
-        } else if (committeeGrid) {
-            committeeGrid.innerHTML = `
-                <div class="no-members-message">
-                    <i class="fas fa-info-circle"></i>
-                    <p>No se encontraron miembros del comité directivo.</p>
-                </div>
-            `;
         }
         
         // Mostrar los miembros en la interfaz (filtrados por institución si es necesario)
