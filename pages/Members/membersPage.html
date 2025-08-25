@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>REDMEXSU | Miembros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
+    <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
+    <link rel="stylesheet" href="/css/Pages/membersPageStyles.css">
+</head>
+<body>
+    <!-- Header dinámico -->
+    <header id="header-container"></header>
+    
+    <main>
+      <h1>Conoce a las personas que integran REDMEXSU</h1>
+      
+      <!-- Sección de Comité -->
+      <section class="committee-section">
+        <h2>Comité Directivo</h2>
+        <div id="committeeGrid" class="committee-grid">
+          <!-- Los miembros del comité se cargarán aquí -->
+        </div>
+      </section>
+      
+      <!-- Pestañas de navegación -->
+      <div class="tabs-container">
+        <button id="tabMembers" class="tab-button active" data-tab="members">
+          <i class="fas fa-users"></i>
+          <span>Miembros</span>
+        </button>
+        <button id="tabInstitutions" class="tab-button" data-tab="institutions">
+          <i class="fas fa-university"></i>
+          <span>Instituciones</span>
+        </button>
+      </div>
+
+      <!-- Contenido de Miembros -->
+      <div id="membersContent" class="tab-content active">
+        <section class="membersSection">
+          <div id="membersGrid" class="gridContainermembers">
+            <!-- Los miembros se cargarán aquí -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Contenido de Instituciones -->
+      <div id="institutionsContent" class="tab-content">
+        <section class="institutionsSection">
+          <div class="institutions-container" id="institutionsGrid">
+            <!-- Las instituciones se cargarán aquí -->
+          </div>
+          
+          <!-- Sección para mostrar los miembros de la institución seleccionada -->
+          <div id="institutionMembersContainer" style="display: none; margin-top: 2rem;">
+            <h2 id="institutionMembersTitle" style="text-align: center; color: var(--primary-color); margin-bottom: 1.5rem;"></h2>
+            <div id="institutionMembersGrid" class="gridContainermembers">
+              <!-- Los miembros de la institución se cargarán aquí -->
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer dinámico -->
+    <footer id="footer-container"></footer>
+
+    <!-- Scripts -->
+    <script src="/js/Components/header.js"></script>
+    <script>
+        // Cargar footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => document.getElementById('footer-container').innerHTML = html)
+            .catch(error => console.error('Error cargando el footer:', error));
+    </script>
+    <script type="module" src="/js/Pages/Members/membersPage.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# Prevenir acceso a archivos ocultos
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Bloquear acceso a directorios sin archivo índice
+Options -Indexes
+
+# Proteger contra ataques XSS y otros tipos de inyección
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+#Comprimir archivos para mejorar el rendimiento
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+#Configurar caché del navegador
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/x-javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-shockwave-flash "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+#Redirigir todo el tráfico a HTTPS (descomentar si tienes SSL)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirigir www a no-www (o viceversa según prefieras)
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# Redirigir todas las peticiones al front controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+#Prevenir hotlinking de imágenes (reemplaza tuejemplo.com con tu dominio)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?tuejemplo.com [NC]
+    RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+</IfModule>
+
+#Proteger archivos sensibles
+<FilesMatch "^(wp-config\.php|composer\.json|\.env|yarn\.lock|package\.json|web\.config|\.gitignore|README\.md|composer\.lock|artisan|gulpfile\.js|package-lock\.json|phpunit\.xml|error_log)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+#Evitar que se listen los directorios
+IndexIgnore *
+
+#Configuración de codificación
+AddDefaultCharset UTF-8
+
+#Prevenir acceso a archivos específicos
+<Files ~ "^.*\.([Hh][Tt][Aa])">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</Files>

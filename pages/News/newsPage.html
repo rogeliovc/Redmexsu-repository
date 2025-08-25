@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REDMEXSU | Noticias</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/componentsStyles/headerStyles.css">
+    <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
+    <link rel="stylesheet" href="/css/Pages/newsPageStyles.css">
+    <script src="/js/Components/header.js" defer></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Nuestros scripts -->
+    <script type="module" src="/js/Pages/News/newsPage.js"></script>
+</head>
+<body>
+    <!-- Header dinámico -->
+    <header id="header-container"></header>
+    
+    <main class="news-container">
+        <div class="page-header">
+            <h1>Noticias</h1>
+            <p>Mantente informado sobre las últimas noticias y actualizaciones de REDMEXSU</p>
+        </div>
+
+        <!-- Carrusel de noticias destacadas -->
+        <div class="featured-news">
+            <div class="featured-slider">
+                <!-- Las noticias destacadas se cargarán dinámicamente desde Supabase -->
+                <div class="loading">Cargando noticias destacadas...</div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-arrow prev" aria-label="Noticia anterior">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="slider-dots">
+                    <!-- Los puntos de navegación se generarán dinámicamente -->
+                </div>
+                <button class="slider-arrow next" aria-label="Siguiente noticia">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <h2 class="section-title">Últimas noticias</h2>
+
+        <div class="news-grid">
+            <!-- Las noticias se cargarán dinámicamente desde Supabase -->
+            <div class="loading-news">Cargando noticias...</div>
+        </div>
+    </main>
+
+    <!-- Footer dinámico -->
+    <footer id="footer-container"></footer>
+
+    <script>
+        // Cargar footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(html => document.getElementById('footer-container').innerHTML = html)
+            .catch(error => console.error('Error cargando el footer:', error));
+    </script>
+</body>
+</html>
