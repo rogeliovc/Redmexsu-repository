@@ -111,6 +111,92 @@ async function mostrarTodosLosMiembros() {
     }
 }
 
+// Función para cargar la información del director
+async function cargarDirector() {
+    try {
+        console.log('Cargando información del director...');
+        const supabase = await getSupabase();
+        if (!supabase) throw new Error('No se pudo conectar a la base de datos');
+        
+        // Obtener al director (asumiendo que hay un campo 'es_director' en la tabla de miembros)
+        const { data: director, error } = await supabase
+            .from('miembros')
+            .select('*')
+            .eq('es_director', true)
+            .single();
+            
+        if (error) throw error;
+        
+        // Mostrar el director si se encontró
+        const directorContainer = document.getElementById('directorContainer');
+        if (director && directorContainer) {
+            console.log('Mostrando información del director:', director.nombre);
+            
+            // Obtener iniciales para el avatar
+            const nombres = director.nombre ? director.nombre.split(' ') : [];
+            const iniciales = nombres.length > 0 
+                ? (nombres[0][0] + (nombres.length > 1 ? nombres[1][0] : nombres[0][nombres[0].length > 1 ? 1 : 0])).toUpperCase()
+                : '??';
+            
+            // Crear el elemento del director
+            directorContainer.innerHTML = `
+                <div class="director-member">
+                    <div class="director-avatar">
+                        ${director.foto_url 
+                            ? `<img src="${director.foto_url}" alt="${director.nombre || 'Director'}">`
+                            : `<div class="director-avatar-initials">${iniciales}</div>`
+                        }
+                    </div>
+                    <div class="director-details">
+                        <div class="director-info">
+                            <h3 class="member-name">${director.nombre || 'Nombre no disponible'}</h3>
+                            <p class="member-role">${director.puesto || 'Director'}</p>
+                            ${director.descripcion ? `<p class="member-bio">${director.descripcion}</p>` : ''}
+                        </div>
+                        <div class="director-social">
+                            ${director.linkedin ? `<a href="${director.linkedin}" target="_blank" rel="noopener noreferrer" title="LinkedIn"><i class="fab fa-linkedin"></i></a>` : ''}
+                            ${director.twitter ? `<a href="${director.twitter}" target="_blank" rel="noopener noreferrer" title="Twitter"><i class="fab fa-twitter"></i></a>` : ''}
+                            ${director.email ? `<a href="mailto:${director.email}" title="Correo electrónico"><i class="fas fa-envelope"></i></a>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Animación de aparición
+            const directorElement = document.querySelector('.director-member');
+            if (directorElement) {
+                directorElement.style.opacity = '0';
+                directorElement.style.transform = 'translateY(20px)';
+                directorElement.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                
+                setTimeout(() => {
+                    directorElement.style.opacity = '1';
+                    directorElement.style.transform = 'translateY(0)';
+                }, 100);
+            }
+        } else if (directorContainer) {
+            directorContainer.innerHTML = `
+                <div class="no-data">
+                    <i class="fas fa-user-tie"></i>
+                    <p>No se encontró información del director.</p>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error al cargar la información del director:', error);
+        const directorContainer = document.getElementById('directorContainer');
+        if (directorContainer) {
+            directorContainer.innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Error al cargar la información del director.</p>
+                    <p><small>${error.message}</small></p>
+                </div>
+            `;
+        }
+    }
+}
+
 // Función para cargar los miembros del comité
 async function cargarComite() {
     try {
@@ -209,6 +295,9 @@ async function cargarComite() {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM cargado, inicializando pestañas...');
     
+    // Cargar la información del director
+    await cargarDirector();
+    
     // Configurar manejadores de eventos para las pestañas
     document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', function() {
@@ -218,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
     
-    // Cargar el comité directivo inmediatamente
+    // Cargar el comité directivo
     await cargarComite();
     
     // Verificar si hay una pestaña en la URL
