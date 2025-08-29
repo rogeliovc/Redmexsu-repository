@@ -58,40 +58,82 @@ function initializeMobileMenu() {
     const menuToggle = document.getElementById('mobile-menu');
     const nav = document.getElementById('main-nav');
     const overlay = document.getElementById('overlay');
-    const navItems = document.querySelectorAll('.navItem');
 
-    if (!menuToggle || !nav || !overlay) return;
+    if (!menuToggle || !nav || !overlay) {
+        console.warn('No se encontraron los elementos del menú móvil');
+        return;
+    }
 
-    // Función para alternar el menú
-    function toggleMenu() {
+    // Toggle del menú principal
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
         menuToggle.classList.toggle('active');
         nav.classList.toggle('active');
         overlay.classList.toggle('active');
-        document.body.style.overflow = nav.classList.contains('active') ? 'hidden' : '';
-    }
-
-    // Evento click en el botón del menú
-    menuToggle.addEventListener('click', toggleMenu);
-
-    // Evento click en el overlay
-    overlay.addEventListener('click', toggleMenu);
-
-    // Cerrar menú al hacer clic en un enlace
-    navItems.forEach(item => {
-        item.addEventListener('click', () => {
-            if (nav.classList.contains('active')) {
-                toggleMenu();
-            }
-        });
+        document.body.style.overflow = document.body.style.overflow === 'hidden' ? '' : 'hidden';
     });
 
-    // Cerrar menú al cambiar el tamaño de la ventana (si se cambia a escritorio)
-    window.addEventListener('resize', () => {
-        if (window.innerWidth > 768) {
+    // Manejar clic en los dropdowns
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const link = dropdown.querySelector('.navLink');
+        const content = dropdown.querySelector('.dropdown-content');
+        
+        if (link && content) {
+            link.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                }
+            });
+        }
+    });
+
+    // Cerrar menús al hacer clic en un enlace
+    const navLinks = document.querySelectorAll('.navItem:not(.dropdown) > a, .dropdown-item');
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
             menuToggle.classList.remove('active');
             nav.classList.remove('active');
             overlay.classList.remove('active');
             document.body.style.overflow = '';
+            
+            // Cerrar todos los dropdowns
+            document.querySelectorAll('.dropdown').forEach(dd => {
+                dd.classList.remove('active');
+            });
+        });
+    });
+
+    // Cerrar menú al hacer clic en el overlay
+    overlay.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        nav.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        
+        // Cerrar todos los dropdowns
+        document.querySelectorAll('.dropdown').forEach(dd => {
+            dd.classList.remove('active');
+        });
+    });
+
+    // Cerrar menús al hacer clic fuera
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            const isClickInside = nav.contains(e.target) || menuToggle.contains(e.target);
+            if (!isClickInside) {
+                menuToggle.classList.remove('active');
+                nav.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                
+                // Cerrar todos los dropdowns
+                document.querySelectorAll('.dropdown').forEach(dd => {
+                    dd.classList.remove('active');
+                });
+            }
         }
     });
 }

@@ -1,0 +1,205 @@
+/* Banner */
+.banner {
+  background: #f8fafc;
+  padding: 2rem 1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 120px;
+  margin-bottom: 1rem;
+}
+
+.banner h1 {
+  margin: 1rem 0 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  color: #1e3c72;
+  letter-spacing: -0.5px;
+}
+
+/* Main container */
+.activities-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  color: #333;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1; /* Below header */
+  margin-top: 70px; /* Height of header */
+}
+
+/* Typography */
+h2 {
+  color: #0f2d5a;
+  font-size: 2.1rem;
+  margin: 3rem 0 1.5rem;
+  font-weight: 800;
+  font-family: 'Montserrat', sans-serif;
+  position: relative;
+  padding-bottom: 0.8rem;
+  letter-spacing: -0.5px;
+}
+
+h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #2a5298, #3b7dd8);
+  border-radius: 3px;
+}
+
+h3 {
+  color: #1e3c72;
+  font-size: 1.6rem;
+  margin: 2.8rem 0 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(90deg, #1e3c72, #2a5298);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+h4 {
+  color: #2a4b8d;
+  font-size: 1.25rem;
+  margin: 2.2rem 0 1.2rem;
+  font-weight: 700;
+  position: relative;
+  padding-left: 1rem;
+  border-left: 4px solid #3b7dd8;
+  line-height: 1.4;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  color: #2d3748;
+  font-size: 1.08rem;
+  line-height: 1.8;
+  font-weight: 400;
+}
+
+/* Lists */
+ul {
+  padding-left: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+li {
+  margin-bottom: 0.8rem;
+  color: #444;
+  position: relative;
+  padding-left: 1.2rem;
+  line-height: 1.6;
+}
+
+li:before {
+  content: '•';
+  color: #2a5298;
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+  position: absolute;
+  left: 0;
+}
+
+/* Team grid */
+.participants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.participants-grid li {
+  padding: 0.5rem 0;
+  margin: 0;
+  padding-left: 0;
+  border-bottom: 1px solid #eee;
+}
+
+.participants-grid li:before {
+  display: none;
+}
+
+/* Links */
+.related-links {
+  margin: 3rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.related-links h4 {
+  margin-top: 0;
+  color: #1e3c72;
+}
+
+.related-links ul {
+  margin: 1rem 0 0;
+}
+
+.related-links a {
+  color: #2a5298;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.related-links a:hover {
+  color: #1e3c72;
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .banner {
+    padding: 3rem 1rem 2rem;
+  }
+  
+  .banner h1 {
+    font-size: 2.2rem;
+  }
+  
+  .activities-container {
+    padding: 0 1.25rem 3rem;
+  }
+  
+  h2 {
+    font-size: 1.7rem;
+    margin-top: 2.5rem;
+  }
+  
+  h3 {
+    font-size: 1.3rem;
+  }
+  
+  .participants-grid {
+    grid-template-columns: 1fr;
+  }
+}

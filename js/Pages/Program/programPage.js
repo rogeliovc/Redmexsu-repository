@@ -76,7 +76,7 @@ const renderEvents = () => {
       <div class="contenido-evento">
         ${imagesHTML}
         <div>
-          <a href="#">${event.description}</a>
+          <span>${event.description}</span>
           <p>${formatTime(event.start_time)} - ${formatTime(event.end_time)}</p>
         </div>
       </div>

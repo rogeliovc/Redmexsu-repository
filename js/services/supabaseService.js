@@ -106,8 +106,7 @@ export async function getLatestNews() {
         const { data, error } = await supabase
             .from('noticias')
             .select('*')
-            .order('fecha_publicacion', { ascending: false })
-            .limit(6);
+            .order('fecha_publicacion', { ascending: false }); // Ordenar por fecha de publicación descendente
             
         if (error) throw error;
         

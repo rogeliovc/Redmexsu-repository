@@ -1,4 +1,9 @@
 /* ===== Contact Page Styles ===== */
+/* Hide map on contact page */
+location-map {
+    display: none !important;
+}
+
 main {
     max-width: 1200px;
     margin: 2rem auto;

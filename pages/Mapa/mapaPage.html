@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa REDMEXSU</title>
+    <link rel="stylesheet" href="../../css/componentsStyles/headerStyles.css">
+    <link rel="stylesheet" href="../../css/componentsStyles/footerStyles.css">
+    <link rel="stylesheet" href="../../css/Pages/mapaPageStyles.css">
+    <script src="/js/Components/header.js" defer></script>
+    <script src="/js/Components/footer.js" defer></script>
+    
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBknMrE91F4mso9Rj-ZR8eTOiHc9h6Antk"></script>
+    <!-- Map Component -->
+    <script type="module" src="/js/Components/location-ma.js"></script>
+</head>
+<body>
+    <!-- Header dinámico -->
+    <header id="header-container"></header>
+
+    <main class="mapa-container">
+        <h1>Mapa de Ubicaciones</h1>
+        <p>Explora las diferentes ubicaciones de las instituciones asociadas a REDMEXSU.</p>
+        
+        <div class="map-section">
+            <location-map></location-map>
+        </div>
+    </main>
+
+    <!-- Footer dinámico -->
+    <footer id="footer-container"></footer>
+</body>
+</html>
