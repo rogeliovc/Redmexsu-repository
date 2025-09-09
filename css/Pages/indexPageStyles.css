@@ -127,8 +127,8 @@ img {
 @media (max-width: 768px) {
     .hero {
         height: 15vh;
-        min-height: 70px;
-        max-height: 300px;
+        min-height: 60px;
+        max-height: 70px;
         position: relative;
         margin: 0;
         padding: 0;
