@@ -98,15 +98,21 @@ export async function getFeaturedNews() {
 }
 
 // Obtener últimas noticias
-export async function getLatestNews() {
+export async function getLatestNews(limit) {
     try {
         const supabase = await getSupabase();
         console.log('Obteniendo últimas noticias...');
         
-        const { data, error } = await supabase
+        let query = supabase
             .from('noticias')
             .select('*')
-            .order('fecha_publicacion', { ascending: false }); // Ordenar por fecha de publicación descendente
+            .order('fecha_publicacion', { ascending: false });
+            
+        if (limit) {
+            query = query.limit(limit);
+        }
+        
+        const { data, error } = await query;
             
         if (error) throw error;
         
@@ -114,6 +120,37 @@ export async function getLatestNews() {
         return data || [];
     } catch (error) {
         console.error('Error al obtener últimas noticias:', error);
+        return [];
+    }
+}
+
+// Obtener próximos eventos
+export async function getLatestEvents(limit = 1) {
+    try {
+        const supabase = await getSupabase();
+        console.log('Obteniendo próximos eventos...');
+        
+        const today = new Date().toISOString().split('T')[0];
+        
+        let query = supabase
+            .from('agenda')
+            .select('*')
+            .gte('date', today) // Solo eventos futuros o de hoy
+            .order('date', { ascending: true }) // Ordenar por fecha ascendente (más cercano primero)
+            .order('start_time', { ascending: true });
+            
+        if (limit) {
+            query = query.limit(limit);
+        }
+        
+        const { data, error } = await query;
+            
+        if (error) throw error;
+        
+        console.log('Próximos eventos obtenidos:', data ? data.length : 0);
+        return data || [];
+    } catch (error) {
+        console.error('Error al obtener próximos eventos:', error);
         return [];
     }
 }
