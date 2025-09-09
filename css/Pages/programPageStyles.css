@@ -15,9 +15,6 @@ body {
   max-width: 1000px;
   margin: 2rem auto;
   padding: 2.5rem;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
 /* Título principal */
@@ -31,44 +28,110 @@ body {
   position: relative;
   display: inline-block;
   letter-spacing: -0.5px;
+  width: 100%;
+  text-align: center;
 }
 
-.agenda h1::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #3182ce, #63b3ed);
-  border-radius: 3px;
+/* Secciones de eventos */
+.eventos-proximos,
+.eventos-anteriores {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.eventos-proximos {
+  border-top: 4px solid #3182ce;
+  background: linear-gradient(to bottom, #f8fafc, #f0f9ff);
+}
+
+.eventos-anteriores {
+  border-top: 4px solid #718096;
 }
 
 /* Subtítulo */
 .subtitulo {
-  display: inline-block;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #4a5568;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 3rem 0 1.5rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a365d;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  margin: 0 0 1.5rem;
   padding: 0.5rem 0;
   border-bottom: 2px solid #e2e8f0;
   width: 100%;
 }
 
+.eventos-proximos .subtitulo::before {
+  content: '\f073';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  margin-right: 0.75rem;
+  color: #3182ce;
+  font-size: 1.2em;
+}
+
+.eventos-anteriores .subtitulo::before {
+  content: '\f1da';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  margin-right: 0.75rem;
+  color: #718096;
+  font-size: 1.2em;
+}
+
 /* Tarjeta de evento */
 .evento {
-  margin: 2.5rem 0;
-  padding: 0;
-  background: transparent;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: white;
   border-radius: 8px;
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
-  border-left: 1px solid #e2e8f0;
-  padding-left: 1.5rem;
+  border-left: 3px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilo especial para eventos próximos */
+.eventos-proximos .evento {
+  border-left-color: #3182ce;
+  background: linear-gradient(to right, #f8fafc, white);
+  position: relative;
+  overflow: hidden;
+}
+
+.eventos-proximos .evento::after {
+  content: 'Próximo';
+  position: absolute;
+  top: 10px;
+  right: -30px;
+  background: #3182ce;
+  color: white;
+  padding: 2px 30px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transform: rotate(45deg);
+  transform-origin: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+/* Estilo para eventos pasados */
+.eventos-anteriores .evento {
+  opacity: 0.9;
+}
+
+.eventos-anteriores .evento:hover {
+  opacity: 1;
 }
 
 .evento:last-child {
@@ -88,8 +151,9 @@ body {
 }
 
 .evento:hover {
-  transform: translateX(4px);
-  border-left-color: #cbd5e0;
+  transform: translateX(8px);
+  border-left-color: #3182ce;
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.1);
 }
 
 .evento:hover::before {
@@ -125,6 +189,84 @@ body {
   gap: 2rem;
   margin-top: 1.25rem;
   align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+/* Estilos para la ubicación del evento */
+.event-location {
+  display: flex;
+  align-items: center;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: #4a5568;
+  font-weight: 500;
+  background: #f1f5f9;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  display: inline-flex;
+  transition: all 0.2s ease;
+}
+
+.event-location:hover {
+  background: #e2e8f0;
+  transform: translateX(2px);
+}
+
+.event-location::before {
+  content: '\f3c5';
+  font-family: 'Font Awesome 6 Free';
+  margin-right: 0.5rem;
+  color: #718096;
+  font-size: 0.9em;
+}
+
+/* Mensajes de carga y sin eventos */
+.cargando,
+.no-events,
+.error {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  color: #64748b;
+  font-style: italic;
+  background: #f8fafc;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+  border: 2px dashed #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.no-events {
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 1.05rem;
+}
+
+.no-events::before {
+  content: '\f129';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 400;
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #cbd5e1;
+}
+
+.error {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  padding: 1.5rem;
+}
+
+.error::before {
+  content: '\f06a';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #f87171;
 }
 
 .contenido-evento img {
@@ -200,16 +342,21 @@ p::before {
 }
 
 /* Responsive */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .agenda {
-    padding: 1.5rem;
-    margin: 1rem;
-    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
   }
   
-  .agenda h1 {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
+  .eventos-proximos,
+  .eventos-anteriores {
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
   }
   
   .contenido-evento {
