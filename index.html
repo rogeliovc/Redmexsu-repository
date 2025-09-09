@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="/css/componentsStyles/footerStyles.css">
     <link rel="stylesheet" href="/css/Pages/indexPageStyles.css">
     <script src="/js/Components/header.js" defer></script>
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Nuestros scripts -->
+    <script type="module" src="/js/Pages/Home/homePage.js"></script>
 </head>
 <body>
     <!-- Header dinámico -->
@@ -143,17 +147,8 @@
                 <div class="news-grid">
                     <div class="news-main">
                         <article class="news-card animate-on-scroll delay-1">
-                            <div class="news-header">
-                                <h3>Última Noticia</h3>
-                                <div class="news-date">8 AGO 2023</div>
-                            </div>
-                            <div class="news-image">
-                                <img src="/assets/Pages/Home/redmexsuNoticia.jpg" alt="Evento de Supercómputo">
-                            </div>
-                            <div class="news-content">
-                                <h3>Encuentro entre integrantes de la REDMEXSU y el CNS</h3>
-                                <p>En el marco del encuentro de los miembros de la REDMEXSU en el Centro Nacional de Supercomputación (CNS), se ha llevado a cabo una reunión estratégica para abordar diversos aspectos técnicos, administrativos y operativos clave.</p>
-                            </div>
+                            <!-- Contenido dinámico se cargará aquí -->
+                            <div class="loading-news">Cargando última noticia...</div>
                         </article>
                     </div>
                     <div class="latest-event">
