@@ -50,25 +50,8 @@
     <!-- Footer dinámico -->
     <footer id="footer-container"></footer>
 
-
     <!-- JVS -->
     <script>
-      // Cargar header sin el mapa
-      fetch('../../components/header.html')
-        .then(res => res.text())
-        .then(html => {
-          // Remover cualquier script de Google Maps que pueda estar en el header
-          const tempDiv = document.createElement('div');
-          tempDiv.innerHTML = html;
-          const scripts = tempDiv.querySelectorAll('script');
-          scripts.forEach(script => {
-            if (script.src && script.src.includes('maps.googleapis.com')) {
-              script.remove();
-            }
-          });
-          document.getElementById('header-container').innerHTML = tempDiv.innerHTML;
-        });
-
       fetch('../../components/footer.html')
         .then(res => res.text())
         .then(html => document.getElementById('footer-container').innerHTML = html);

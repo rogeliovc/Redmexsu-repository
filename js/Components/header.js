@@ -7,7 +7,7 @@ function loadHeader() {
     }
 
     // Cargar el contenido del header
-    fetch('/components/header.html')
+    fetch('/components/header.html', { cache: 'no-cache' })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error al cargar el header: ' + response.status);

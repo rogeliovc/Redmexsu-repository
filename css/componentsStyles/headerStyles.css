@@ -1,11 +1,13 @@
 /* ===== Header depured ===== */
-header {
-    background: #eff0f1;
-    border-bottom: 1px solid #3762b8;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-    position: relative;
-    z-index: 1000; /* Higher than page content */
-    width: 100%;
+body > header, body.agenda-page > header {
+    background: #eff0f1 !important;
+    border-bottom: 1px solid #3762b8 !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2) !important;
+    position: relative !important;
+    z-index: 1000 !important; /* Higher than page content */
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 header .headerContainer {
@@ -21,11 +23,11 @@ header .headerContent {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    min-height: 70px;
-    height: auto;
+    min-height: 80px;
+    height: 80px;
     width: 100%;
     padding: 0.5rem 0;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     position: relative;
     z-index: 1001; /* Higher than header */
 }
@@ -136,34 +138,46 @@ header .navLinks {
 }
 
 header .navItem {
-    position: relative;
-    text-decoration: none;
-    color: #2c3e50;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 0.95rem;
-    letter-spacing: 1.2px;
-    border-radius: 5px;
+    position: relative !important;
+    text-decoration: none !important;
+    color: #2c3e50 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 1.2px !important;
+    border-radius: 5px !important;
+    background: transparent !important;
+    padding: 0.5rem 1rem !important;
+    margin: 0 !important;
+    border: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
 }
-header .navItem:hover{
-    color: #3762b8;
-    background: rgba(227, 228, 230, 0.4);
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0);
-    transform: translateY(-2px);
+body > header .navItem:hover, body.agenda-page > header .navItem:hover {
+    color: #3762b8 !important;
+    background: rgba(227, 228, 230, 0.4) !important;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0) !important;
+    transform: translateY(-2px) !important;
 }
 
 header .navItem:hover .navUnderline {
     width: 100%;
 }
 
-header .navUnderline {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #005c97, #00a1e0);
-    transition: width 0.3s ease;
-    border-radius: 2px;
+body > header .navUnderline, body.agenda-page > header .navUnderline {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, #005c97, #00a1e0) !important;
+    transition: width 0.3s ease !important;
+    border-radius: 2px !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* Dropdown Menu Styles */
